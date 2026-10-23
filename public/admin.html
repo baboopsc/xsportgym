@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#22221f">
+  <title>Yönetim Paneli | Xsportgym</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body class="panel-govde">
+
+  <div id="panel" class="panel gizli">
+    <!-- SOL MENÜ -->
+    <aside class="panel-yan">
+      <a class="logo" href="/" target="_blank" rel="noopener" title="Siteyi yeni sekmede aç">
+        <span class="logo__isaret"><img src="/img/logo-x.svg" alt="" width="46" height="46"></span><span class="logo__yazi"><span class="logo__ust">Xsportgym</span><span class="logo__alt">YÖNETİM PANELİ</span></span>
+      </a>
+      <nav class="sekmeler" role="tablist" aria-label="Panel bölümleri">
+        <button class="sekme secili" data-sekme="siparisler" role="tab"><i data-ikon="liste"></i><span>Siparişler</span><span class="sekme-sayi gizli" id="yeniSayi"></span></button>
+        <button class="sekme" data-sekme="urunler" role="tab"><i data-ikon="filiz"></i><span>Ürünler</span></button>
+        <button class="sekme" data-sekme="uyeler" role="tab"><i data-ikon="kullanicilar"></i><span>Üyeler</span></button>
+        <button class="sekme" data-sekme="hesap" role="tab"><i data-ikon="hesap"></i><span>Hesabım</span></button>
+      </nav>
+      <div class="panel-yan__alt">
+        <a class="panel-link" href="/" target="_blank" rel="noopener"><i data-ikon="dukkan"></i><span>Siteyi aç</span></a>
+        <div class="panel-kullanici">
+          <span class="avatar" id="avatar">A</span>
+          <span><small>Giriş yapan</small><strong id="kullaniciAdiGoster"></strong></span>
+          <button id="cikis" class="ikon-btn" type="button" aria-label="Çıkış yap" title="Çıkış yap"><i data-ikon="cikis"></i></button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- İÇERİK -->
+    <div class="panel-ana">
+      <header class="panel-ust">
+        <div>
+          <p class="ust-baslik" id="panelTarih"></p>
+          <h1 id="panelBaslik">Siparişler</h1>
+        </div>
+      </header>
+      <div id="uyarilar"></div>
+
+      <!-- SİPARİŞLER -->
+      <section id="siparislerSekmesi">
+        <div class="ozet-izgara" id="ozetKartlari"></div>
+        <div class="arac-satiri">
+          <select id="filtre" aria-label="Durum"></select>
+          <label class="arama-kutu" for="ara"><span class="ekran-okuyucu">Ara</span><i data-ikon="arama"></i>
+            <input id="ara" type="search" placeholder="Sipariş no, ad, telefon, e-posta"></label>
+          <button id="yenile" type="button" class="ikon-btn cerceveli" aria-label="Yenile" title="Yenile"><i data-ikon="yenile"></i></button>
+        </div>
+        <div id="siparisListesi"></div>
+      </section>
+
+      <!-- ÜRÜNLER -->
+      <section id="urunlerSekmesi" class="gizli">
+        <div class="arac-satiri">
+          <p class="soluk kucuk">Sıra numarası küçük olan ürün sitede önce görünür. Ana sayfada ilk 8 ürün gösterilir.</p>
+          <button class="btn" id="yeniUrun" type="button">Yeni ürün <i data-ikon="arti"></i></button>
+        </div>
+        <div id="urunListesi" class="urun-tablo"></div>
+      </section>
+
+      <!-- ÜYELER -->
+      <section id="uyelerSekmesi" class="gizli">
+        <div id="uyeListesi"></div>
+      </section>
+
+      <!-- YÖNETİCİ HESABI -->
+      <section id="hesapSekmesi" class="gizli">
+        <div class="kart dar-kart">
+          <h2>Giriş bilgilerim</h2>
+          <p class="soluk kucuk">Siteye giriş yaparken bu kullanıcı adını ve şifreyi kullanırsınız. Değiştirmek için mevcut şifrenizi yazın.</p>
+          <form id="hesapForm">
+            <label for="hKullaniciAdi">Kullanıcı adı</label>
+            <input id="hKullaniciAdi" class="genis" maxlength="30" autocomplete="username" required>
+            <label for="hYeniSifre">Yeni şifre <span class="kucuk soluk">(değiştirmeyecekseniz boş bırakın, en az 10 karakter)</span></label>
+            <input id="hYeniSifre" class="genis" type="password" autocomplete="new-password" minlength="10">
+            <label for="hYeniSifre2">Yeni şifre (tekrar)</label>
+            <input id="hYeniSifre2" class="genis" type="password" autocomplete="new-password">
+            <label for="hMevcutSifre">Mevcut şifre</label>
+            <input id="hMevcutSifre" class="genis" type="password" autocomplete="current-password" required>
+            <p class="islem"><button type="submit" class="btn">Kaydet</button> <span id="hesapMesaj" class="kucuk"></span></p>
+          </form>
+        </div>
+      </section>
+
+      <!-- ÜRÜN DÜZENLE -->
+      <section id="urunDuzenle" class="gizli">
+        <p><button id="urunlereDon" type="button" class="ok-link"><i data-ikon="ok-sol"></i> Ürünlere dön</button></p>
+        <div class="duzenle-izgara">
+          <div>
+            <div class="kart">
+              <h2 id="urunBaslik">Yeni ürün</h2>
+              <form id="urunForm">
+                <div class="alan-satiri">
+                  <div><label for="uAd">Ürün adı</label><input id="uAd" class="genis" maxlength="100" placeholder="ör. Kiraz Fidanı" required></div>
+                  <div><label for="uLatince">Latince adı <span class="kucuk soluk">(isteğe bağlı)</span></label><input id="uLatince" class="genis" maxlength="80" placeholder="ör. Prunus avium"></div>
+                </div>
+                <label for="uKategori">Kategori</label>
+                <input id="uKategori" class="genis" maxlength="50" list="kategoriListesi" placeholder="ör. Meyve Fidanı" required>
+                <datalist id="kategoriListesi"></datalist>
+                <label for="uAciklama">Açıklama <span class="kucuk soluk">(ilk paragraf ürünün üstünde kısa tanıtım olarak görünür)</span></label>
+                <textarea id="uAciklama" rows="6" maxlength="5000" placeholder="Fidanın özellikleri, meyvesi, nerelere uygun olduğu..."></textarea>
+
+                <h3 class="alt-baslik"><i data-ikon="yaprak"></i> Dikim ve bakım bilgileri</h3>
+                <p class="soluk kucuk">Ürün sayfasında ikonlarla gösterilir. Boş bıraktıklarınız görünmez.</p>
+                <div class="bakim-alanlari" id="bakimAlanlari"></div>
+
+                <div class="alan-satiri">
+                  <div><label for="uSira">Sıra <span class="kucuk soluk">(küçük olan önce görünür)</span></label><input id="uSira" type="number" min="0" max="9999" value="0"></div>
+                  <div><label class="onay anahtar"><input type="checkbox" id="uAktif"><span>Sitede görünsün</span></label></div>
+                </div>
+                <p class="islem"><button type="submit" class="btn" id="urunKaydet">Kaydet</button>
+                  <span id="urunMesaj" class="kucuk"></span></p>
+              </form>
+            </div>
+          </div>
+
+          <div id="urunEkler" class="gizli">
+            <div class="kart">
+              <h3>Seçenekler ve fiyatlar</h3>
+              <p class="kucuk soluk">Her fidanın en az bir seçeneği olmalı (ör. "1 yaşlı", "2 yaşlı", "Saksılı"). Fiyatı 750 veya 750,50 şeklinde yazın.</p>
+              <table class="secenek-tablo">
+                <thead><tr><th>Seçenek</th><th>Fiyat (TL)</th><th>Stok</th><th>Satışta</th><th></th></tr></thead>
+                <tbody id="secenekSatirlari"></tbody>
+              </table>
+              <p class="hata" id="secenekHata"></p>
+            </div>
+
+            <div class="kart">
+              <h3>Fotoğraflar</h3>
+              <p class="kucuk soluk">İlk fotoğraf kapak fotoğrafıdır. Fotoğraflar yüklenmeden önce otomatik küçültülür. En güzel sonuç için fidanı açık renk, sade bir zeminde dik olarak çekin.</p>
+              <div class="gorsel-izgara" id="gorseller"></div>
+              <label class="yukle-alani" for="gorselSec"><i data-ikon="yukle"></i><span><strong>Fotoğraf seç</strong> veya buraya bırak</span>
+                <input type="file" id="gorselSec" accept="image/jpeg,image/png,image/webp" multiple></label>
+              <p class="kucuk" id="gorselMesaj"></p>
+            </div>
+
+            <div class="kart tehlike-kart">
+              <h3>Ürünü sil</h3>
+              <p class="kucuk soluk">Silinen ürün geri getirilemez. Geçmiş siparişlerdeki bilgiler korunur. Satışı durdurmak için silmek yerine "Sitede görünsün" kutusunu kaldırabilirsiniz.</p>
+              <button class="tehlike" id="urunSil" type="button"><i data-ikon="cop"></i> Ürünü sil</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

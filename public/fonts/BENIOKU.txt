@@ -1,0 +1,5 @@
+Bu klasördeki yazı tipleri SIL Open Font License 1.1 ile lisanslıdır (ticari kullanım serbesttir).
+- Poppins: Copyright 2020 The Poppins Project Authors (github.com/itfoundry/Poppins) — başlıklar, menü, butonlar
+- Inter: Copyright 2016 The Inter Project Authors (github.com/rsms/inter) — metinler
+Lisans metni: https://openfontlicense.org
+Dosyalar sadece Türkçe/Latin karakterleri içerecek şekilde küçültülmüştür.

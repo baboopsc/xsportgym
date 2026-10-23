@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hesabım | Xsportgym</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+  <main>
+    <section class="kap sayfa-basi sade">
+      <div class="sayfa-basi__kart hesap-basi">
+        <div>
+          <p class="ust-baslik">Hesabım</p>
+          <h1 id="merhaba">Merhaba</h1>
+        </div>
+        <button type="button" class="btn ikincil" id="cikis">Çıkış yap <i data-ikon="cikis"></i></button>
+      </div>
+    </section>
+
+    <div class="kap sayfa-ic">
+      <div class="hesap-izgara">
+        <section class="kart" data-reveal>
+          <h2>Siparişlerim</h2>
+          <div id="siparisler"><p class="yukleniyor-yazi">Yükleniyor</p></div>
+        </section>
+
+        <div>
+          <form class="kart" id="bilgiForm" data-reveal>
+            <h2>Bilgilerim</h2>
+            <p class="soluk kucuk">Bu bilgiler ödeme sayfasında otomatik doldurulur.</p>
+            <div class="alan-satiri">
+              <div><label for="ad">Ad</label><input id="ad" maxlength="50" required></div>
+              <div><label for="soyad">Soyad</label><input id="soyad" maxlength="50" required></div>
+            </div>
+            <label for="email">E-posta</label>
+            <input id="email" disabled>
+            <label for="telefon">Cep telefonu</label>
+            <input id="telefon" type="tel" placeholder="05xx xxx xx xx" maxlength="20">
+            <div class="alan-satiri">
+              <div><label for="il">İl</label><select id="il"><option value="">Seçin</option></select></div>
+              <div><label for="ilce">İlçe</label><input id="ilce" maxlength="50"></div>
+            </div>
+            <label for="adres">Açık adres</label>
+            <textarea id="adres" rows="3" maxlength="300"></textarea>
+            <label for="postaKodu">Posta kodu</label>
+            <input id="postaKodu" inputmode="numeric" maxlength="5">
+            <p></p>
+            <p><button type="submit" class="btn">Kaydet</button><span id="bilgiMesaj" class="form-mesaj"></span></p>
+          </form>
+
+          <form class="kart" id="sifreForm" data-reveal>
+            <h2>Şifre değiştir</h2>
+            <label for="mevcutSifre">Mevcut şifre</label>
+            <input id="mevcutSifre" type="password" autocomplete="current-password" required>
+            <label for="yeniSifre">Yeni şifre <span class="soluk kucuk">(en az 8 karakter)</span></label>
+            <input id="yeniSifre" type="password" autocomplete="new-password" minlength="8" required>
+            <p></p>
+            <p><button type="submit" class="btn">Şifremi değiştir</button><span id="sifreMesaj" class="form-mesaj"></span></p>
+          </form>
+
+          <details class="kart" data-reveal>
+            <summary>Hesabımı sil <i data-ikon="asagi"></i></summary>
+            <p class="soluk kucuk">Hesabınız ve kayıtlı bilgileriniz silinir. Geçmiş siparişleriniz yasal saklama süresi boyunca
+              işletmenin kayıtlarında kalır, ancak hesabınızla ilişkisi kaldırılır.</p>
+            <form id="silForm">
+              <label for="silSifre">Onaylamak için şifreniz</label>
+              <input id="silSifre" type="password" autocomplete="current-password" required>
+              <p></p>
+              <p><button type="submit" class="btn tehlike-btn">Hesabımı kalıcı olarak sil</button> <span id="silMesaj" class="form-mesaj hata"></span></p>
+            </form>
+          </details>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/hesabim.js"></script>
+</body>
+</html>

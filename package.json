@@ -1,0 +1,31 @@
+{
+  "name": "xsportgym",
+  "version": "1.0.0",
+  "description": "Xsportgym spor salonu sitesi (iyzico ödeme, üyelik, admin paneli)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "kurulum": "node kurulum.js",
+    "sifre": "node sifre-olustur.js",
+    "test": "node --test --test-concurrency=1 test/sistem.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "iyzipay": "^2.0.70",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^9.1.1",
+    "pg": "^8.23.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20.19"
+  }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paket | Xsportgym</title>
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+
+  <main class="sayfa-ic">
+    <div class="kap">
+      <nav class="yol" aria-label="Konum" id="yol"><a href="/">Ana Sayfa</a><i data-ikon="sag"></i><a href="/paketler.html">Paketler</a></nav>
+      <p id="durum" class="yukleniyor-yazi">Paket yükleniyor</p>
+
+      <div class="urun-detay gizli" id="detay">
+        <div class="galeri" data-reveal="sol">
+          <span class="cerceve"><span class="cerceve__ic" id="anaCerceve">
+            <img id="anaGorsel" alt="">
+            <span class="cerceve__bos gizli" id="bosGorsel"><span data-cizim="dambil"></span><span>Fotoğraf yakında</span></span>
+          </span></span>
+          <div class="galeri__kucukler" id="kucukGorseller"></div>
+        </div>
+
+        <div class="urun-bilgi" data-reveal="sag">
+          <p class="ust-baslik" id="kategori"></p>
+          <h1 id="ad"></h1>
+          <p class="latin gizli" id="latin"></p>
+          <div class="fiyat-buyuk"><span id="fiyat"></span><small>Kargo ücretsiz</small></div>
+          <p class="urun-ozet gizli" id="ozet"></p>
+
+          <hr class="ayrac">
+          <form id="sepetForm">
+            <fieldset>
+              <legend class="secenek-baslik"><span>Seçenek</span><span id="secenekBilgi"></span></legend>
+              <div class="secenekler" id="secenekler"></div>
+            </fieldset>
+            <div class="satin-al">
+              <div class="adet-kutu" role="group" aria-label="Adet">
+                <button type="button" data-adet="-1" aria-label="Azalt"><i data-ikon="eksi"></i></button>
+                <input type="number" id="adet" min="1" max="10" value="1" inputmode="numeric" aria-label="Adet">
+                <button type="button" data-adet="1" aria-label="Artır"><i data-ikon="arti"></i></button>
+              </div>
+              <button type="submit" class="btn buyuk" id="ekleBtn">Sepete ekle</button>
+            </div>
+            <button type="button" class="btn ikincil tam buyuk hemen-al" id="hemenAl">Hemen satın al <i data-ikon="ok-capraz"></i></button>
+          </form>
+
+          <ul class="guvence">
+            <li><i data-ikon="kargo"></i><span><strong>Ücretsiz kargo.</strong> <span id="kargoBilgi">Aras Kargo ile gönderilir.</span></span></li>
+            <li><i data-ikon="kalkan"></i><span><strong>Güvenli ödeme.</strong> Kart bilgileriniz bu sitede saklanmaz.</span></li>
+            <li><i data-ikon="iade"></i><span><strong>14 gün cayma hakkı.</strong> <a href="/sayfa/iptal-ve-iade-kosullari">Koşullar</a></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <section class="kap bolum gizli" id="bakimBolum" aria-labelledby="bakimBaslik">
+      <header class="bolum-basi">
+        <p class="ust-baslik">Dikim ve bakım</p>
+        <div data-reveal><h2 id="bakimBaslik">Bu fidanı <em>tanıyın</em></h2><p>Fidanınızın ihtiyaçlarını bilmek, ilk yıl tutmasının en önemli adımı.</p></div>
+      </header>
+      <div class="bakim-izgara" id="bakim" data-reveal></div>
+    </section>
+
+    <section class="kap bolum aciklama-bolum gizli" id="aciklamaBolum" aria-labelledby="aciklamaBaslik">
+      <p class="ust-baslik">Xsportgym</p>
+      <div class="aciklama-icerik">
+        <div data-reveal id="aciklamaSutun">
+          <h2 id="aciklamaBaslik">Paket hakkında</h2>
+          <div class="aciklama" id="aciklama"></div>
+        </div>
+        <aside class="dikim-adimlari" data-reveal>
+          <h3>Dikim adımları</h3>
+          <p class="kucuk">Fidanınızı teslim aldığınızda:</p>
+          <ol>
+            <li><span><strong>Kökleri ıslatın</strong>Birkaç saat suda bekletin.</span></li>
+            <li><span><strong>Çukuru açın</strong>Yaklaşık 60×60 cm, güneş alan bir yere.</span></li>
+            <li><span><strong>Aşı noktası yukarıda</strong>Toprağın üstünde kalsın.</span></li>
+            <li><span><strong>Can suyu verin</strong>Toprağı bastırıp bolca sulayın.</span></li>
+          </ol>
+          <p class="kucuk"><a class="ok-link" href="/#iletisim">Bize sorun <i data-ikon="ok-capraz"></i></a></p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="kap bolum gizli" id="benzerBolum" aria-labelledby="benzerBaslik">
+      <header class="bolum-basi">
+        <p class="ust-baslik">Xsportgym</p>
+        <h2 id="benzerBaslik" data-reveal>Bunlara da<br>göz at</h2>
+        <a class="ok-link bolum-basi__sag" href="/paketler.html">Tüm paketler <i data-ikon="ok-capraz"></i></a>
+      </header>
+      <div class="urun-izgara" id="benzerler"></div>
+    </section>
+  </main>
+
+  <div class="yapiskan-sepet" id="yapiskan" aria-hidden="true">
+    <div class="yapiskan-sepet__metin"><strong id="yAd"></strong><span id="yFiyat"></span></div>
+    <button type="button" class="btn" id="yEkle" tabindex="-1">Sepete ekle</button>
+  </div>
+
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/urun.js"></script>
+</body>
+</html>

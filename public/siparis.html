@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sipariş Takip | Xsportgym</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+  <main>
+    <section class="kap sayfa-basi sade">
+      <div class="sayfa-basi__kart">
+        <nav class="yol" aria-label="Konum"><a href="/">Ana Sayfa</a><i data-ikon="sag"></i><span>Sipariş Takip</span></nav>
+        <h1>Siparişin <em>nerede?</em></h1>
+        <p id="basAciklama">Sipariş numaranızı ve sipariş verirken yazdığınız e-posta adresini girin.</p>
+      </div>
+    </section>
+
+    <div class="kap sayfa-ic">
+      <form class="kart gizli" id="sorguForm">
+        <div class="alan-satiri">
+          <div><label for="siparisNo">Sipariş no</label><input id="siparisNo" inputmode="numeric" placeholder="ör. 100005" required></div>
+          <div><label for="email">E-posta</label><input id="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div id="sorguHata" class="hata-kutu gizli" role="alert"></div>
+        <p><button class="btn buyuk" type="submit">Siparişimi bul <i data-ikon="ok-capraz"></i></button></p>
+        <p class="soluk kucuk">Sipariş numaranız, siparişten sonra gelen e-postanın konusunda yazar. Üyeyseniz siparişlerinizi <a href="/hesabim.html">hesabınızdan</a> da görebilirsiniz.</p>
+      </form>
+
+      <div class="kart gizli" id="siparis"></div>
+    </div>
+  </main>
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/siparis.js"></script>
+</body>
+</html>

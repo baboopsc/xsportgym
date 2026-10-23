@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin.html
+Disallow: /api/
+Disallow: /sepet.html
+Disallow: /odeme.html
+Disallow: /basarili.html
+Disallow: /basarisiz.html
+Disallow: /siparis.html
+Disallow: /siparis/
+Disallow: /giris.html
+Disallow: /hesabim.html

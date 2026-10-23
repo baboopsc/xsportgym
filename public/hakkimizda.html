@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hakkımızda | Xsportgym</title>
+  <meta name="description" content="Xsportgym'in hikâyesi: milli sporcu Selen Mışraklı'nın Antakya Güzelburç'ta kurduğu spor salonu ve fitness merkezi.">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+
+  <main>
+    <!-- 1. BÜYÜK GÖRSEL KARTI -->
+    <section class="kahraman kahraman--hak" aria-labelledby="hakkimizdaBaslik">
+      <div class="kahraman__kart">
+        <div class="kahraman__arka"><div class="gorsel-yeri" data-yer="hakkimizda" data-oncelik></div></div>
+        <img class="kahraman__x" src="/img/logo-x.svg" alt="" aria-hidden="true">
+        <div class="kahraman__ic">
+          <p class="ust-baslik kahraman__ust">Hakkımızda</p>
+          <h1 id="hakkimizdaBaslik"><span>Bir sporcunun</span> <span class="vurgu-yazi">salonu</span> <span class="hafif">Antakya'da herkes için açık</span></h1>
+          <div class="kahraman__satir">
+            <p class="kahraman__ozet">Xsportgym'i milli sporcu Selen Mışraklı kurdu. Sahada öğrendiklerini, her seviyeden insanın güvenle antrenman yapabileceği bir salona dönüştürdü.</p>
+            <a class="btn sari buyuk" href="/#iletisim">Bize ulaşın <i data-ikon="ok-capraz"></i></a>
+          </div>
+          <div class="sayilar kahraman__sayilar">
+            <div class="sayi-kart" data-i="0"><strong>90+</strong><span>saat haftada açık</span></div>
+            <div class="sayi-kart" data-i="1"><strong>6 gün</strong><span>haftada açık</span></div>
+            <div class="sayi-kart" data-i="2"><strong>1'e 1</strong><span>personal training</span></div>
+          </div>
+        </div>
+        <a class="yuzen-kart" href="/paketler.html">
+          <div class="yuzen-kart__ust">
+            <div><strong>Üyelik paketlerini inceleyin</strong><p>Aylık üyelikten birebir personal training'e kadar tüm paketler tek sayfada.</p></div>
+            <span class="daire-ok acik" aria-hidden="true"><i data-ikon="ok-capraz"></i></span>
+          </div>
+          <div class="gorsel-yeri" data-yer="hakkimizdaKart"></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- 2. HİKÂYE -->
+    <!-- Selen'in kendi anlatımıyla güncellenebilir: hangi branşta milli oldu, salonu ne zaman açtı, neden açtı -->
+    <section class="kap bolum tanitim hikaye" aria-labelledby="hikayeBaslik">
+      <div class="tanitim__sol">
+        <p class="ust-baslik">Hikâyemiz</p>
+        <div class="gorsel-yeri hap-gorsel" data-yer="hakkimizdaSol" data-reveal></div>
+      </div>
+      <div class="hikaye__metin" data-reveal>
+        <h2 id="hikayeBaslik">Sahadan salona:<br>Xsportgym nasıl başladı?</h2>
+        <p><b>Selen Mışraklı</b> milli sporcu ve MKÜ Spor Bilimleri Fakültesi'nden. Yıllarca sporcu olarak antrenman yaptı; doğru tekniğin, düzenli programın ve iyi bir antrenörün farkı ne kadar büyüttüğünü kendisi yaşadı.</p>
+        <p>Xsportgym'i bu deneyimi herkesle paylaşmak için kurdu. Bugün <b>ikinci yılımızda</b>, Güzelburç'ta haftanın altı günü kapımız açık. Hedefin kilo vermek, güçlenmek ya da sadece daha iyi hissetmek olsun, <b>sana uygun programla</b> başlıyoruz.</p>
+      </div>
+      <div class="tanitim__sag"><div class="gorsel-yeri dik-gorsel" data-yer="hakkimizdaSag" data-reveal></div></div>
+    </section>
+
+    <!-- 3. KOYU PANO: SAATLER VE İLETİŞİM -->
+    <section class="genis bolum pano" id="saatler" aria-labelledby="panoBaslik">
+      <div class="pano__sol">
+        <h2 id="panoBaslik" data-reveal>Sabah erkenden gece geç saate kadar açığız</h2>
+        <p>İşe gitmeden önce, öğle arasında ya da akşam: programına uyan saatte gel. Haftada 90 saatten fazla açığız.</p>
+        <div class="sayilar">
+          <div class="sayi-kart"><strong>07.00</strong><span>hafta içi açılış</span></div>
+          <div class="sayi-kart"><strong>22.30</strong><span>hafta içi kapanış</span></div>
+          <div class="sayi-kart"><strong>6 gün</strong><span>haftada açık</span></div>
+        </div>
+      </div>
+      <div class="pano__sag" data-reveal="olcek">
+        <div class="grafik-kart">
+          <div class="grafik-kart__ust">
+            <h3>Haftalık çalışma saatleri</h3>
+            <p>Günlere göre açık olduğumuz saatler</p>
+          </div>
+          <div class="metrikler">
+            <div class="metrik"><small>Hafta içi</small><strong>07.00 – 22.30</strong></div>
+            <div class="metrik"><small>Cumartesi</small><strong>08.00 – 21.00</strong></div>
+            <div class="metrik"><small>Pazar</small><strong>Kapalı</strong></div>
+          </div>
+          <div class="saat-grafik" id="saatGrafik" data-gozle aria-label="Günlere göre açık saat sayısı" role="img">
+            <div class="saat-grafik__gun" data-gun="1" data-saat="15.5"><i></i><b>15,5 sa</b><small>Pzt</small></div>
+            <div class="saat-grafik__gun" data-gun="2" data-saat="15.5"><i></i><b>15,5 sa</b><small>Sal</small></div>
+            <div class="saat-grafik__gun" data-gun="3" data-saat="15.5"><i></i><b>15,5 sa</b><small>Çar</small></div>
+            <div class="saat-grafik__gun" data-gun="4" data-saat="15.5"><i></i><b>15,5 sa</b><small>Per</small></div>
+            <div class="saat-grafik__gun" data-gun="5" data-saat="15.5"><i></i><b>15,5 sa</b><small>Cum</small></div>
+            <div class="saat-grafik__gun" data-gun="6" data-saat="13"><i></i><b>13 sa</b><small>Cmt</small></div>
+            <div class="saat-grafik__gun" data-gun="0" data-saat="0"><i></i><b>Kapalı</b><small>Paz</small></div>
+          </div>
+          <p class="grafik-not" id="bugunNot"><span class="nokta"></span><span></span></p>
+        </div>
+        <div class="ekip-kart">
+          <div>
+            <h3>Sorun mu var?</h3>
+            <p>Üyelik, personal training ya da programınla ilgili bize yaz. Hedefine uygun paketi birlikte seçelim.</p>
+            <a class="btn acik" href="/#iletisim">Bize yazın <i data-ikon="ok-capraz"></i></a>
+          </div>
+          <div class="daire-kume" aria-hidden="true">
+            <span><i data-ikon="telefon"></i></span>
+            <span><i data-ikon="dambil"></i></span>
+            <span><i data-ikon="whatsapp"></i></span>
+            <span><i data-ikon="instagram"></i></span>
+            <span><i data-ikon="kalp-ritim"></i></span>
+            <span><i data-ikon="yildirim"></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. GENİŞ GÖRSEL BANDI -->
+    <section class="genis bolum bant bant--hak" aria-labelledby="hakBantBaslik" data-reveal="olcek">
+      <div class="gorsel-yeri" data-yer="hakkimizdaBant"></div>
+      <div class="bant__ust">
+        <p class="bant__not">Doğru teknik, düzenli program ve yanında bir antrenör: sonuç buradan gelir.</p>
+        <h2 id="hakBantBaslik">Disiplin, doğru teknik ve birlikte çalışmak önceliğimiz.</h2>
+        <p class="ust-baslik">Xsportgym</p>
+      </div>
+      <div class="bant__alt">
+        <div class="cam-kutular">
+          <div class="cam-kutu"><i data-ikon="dambil"></i><span>Güç</span></div>
+          <div class="cam-kutu"><i data-ikon="kalp-ritim"></i><span>Kondisyon</span></div>
+          <div class="cam-kutu"><i data-ikon="kupa"></i><span>Disiplin</span></div>
+        </div>
+        <div class="no-kartlar" data-reveal-grup>
+          <div class="no-kart" data-reveal><strong>№1</strong><span>Kişiye özel program</span></div>
+          <div class="no-kart" data-reveal><strong>№2</strong><span>Doğru teknik, güvenli antrenman</span></div>
+          <div class="no-kart" data-reveal><strong>№3</strong><span>Düzenli takip</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. İKİNCİ YAZI -->
+    <section class="kap bolum tanitim hikaye ikinci" aria-labelledby="ikinciBaslik">
+      <div class="tanitim__sol">
+        <p class="ust-baslik">Yaklaşımımız</p>
+        <div class="gorsel-yeri yatay-gorsel" data-yer="hakkimizdaSol2" data-reveal></div>
+      </div>
+      <div class="hikaye__metin" data-reveal>
+        <h2 id="ikinciBaslik">Herkese aynı program değil, sana uygun program</h2>
+        <p>İlk gün hedefini, seviyeni ve haftada kaç gün gelebileceğini konuşuruz. Programını buna göre hazırlar, ilerledikçe güncelleriz.</p>
+        <p>Personal training'de antrenörün her antrenmanda yanında olur; hareketleri doğru teknikle öğrenir, sakatlanma riskini azaltırsın.</p>
+        <a class="btn" href="/paketler.html">Paketleri gör <i data-ikon="ok-capraz"></i></a>
+      </div>
+      <div class="tanitim__sag"><div class="gorsel-yeri genis-gorsel" data-yer="hakkimizdaSag2" data-reveal></div></div>
+    </section>
+
+    <!-- 6. DEĞERLER -->
+    <section class="genis bolum degerler" aria-labelledby="degerBaslik">
+      <div class="degerler__sol">
+        <h2 id="degerBaslik">Bağlı kaldığımız değerler:</h2>
+        <div class="ok-btnlar">
+          <button class="ok-btn" type="button" id="degerGeri" aria-label="Önceki değer"><i data-ikon="ok-sol"></i></button>
+          <button class="ok-btn sari" type="button" id="degerIleri" aria-label="Sonraki değer"><i data-ikon="ok-sag"></i></button>
+        </div>
+      </div>
+      <div class="deger-serit" id="degerSerit" tabindex="0" aria-label="Değerlerimiz">
+        <div class="deger-kart">
+          <h3><span>(01)</span>Doğru teknik</h3>
+          <div class="etiketler-sira"><span class="etiket-cip">Güvenli</span><span class="etiket-cip">Sakatlanmadan</span><span class="etiket-cip">Adım adım</span></div>
+          <p>Her hareketi doğru teknikle öğretiriz. Ağırlık sonra gelir, önce form.</p>
+        </div>
+        <div class="deger-kart koyu">
+          <h3><span>(02)</span>Kişiye özel</h3>
+          <div class="etiketler-sira"><span class="etiket-cip">Hedefine göre</span><span class="etiket-cip">Seviyene göre</span><span class="etiket-cip">Zamanına göre</span></div>
+          <p>Herkesin hedefi farklı. Programını sana göre hazırlar, ilerledikçe güncelleriz.</p>
+        </div>
+        <div class="deger-kart">
+          <h3><span>(03)</span>Disiplin</h3>
+          <div class="etiketler-sira"><span class="etiket-cip">Düzen</span><span class="etiket-cip">Takip</span><span class="etiket-cip">Süreklilik</span></div>
+          <p>Bir sporcunun disiplinini salona taşıyoruz. Sonuç, her gün biraz daha ileri gitmekten gelir.</p>
+        </div>
+        <div class="deger-kart">
+          <h3><span>(04)</span>Herkes için</h3>
+          <div class="etiketler-sira"><span class="etiket-cip">Yeni başlayan</span><span class="etiket-cip">Sporcu</span><span class="etiket-cip">Her yaş</span></div>
+          <p>İlk kez salona gelen de, yarışmaya hazırlanan da burada kendine uygun bir yer bulur.</p>
+        </div>
+        <div class="deger-kart koyu">
+          <h3><span>(05)</span>Yanındayız</h3>
+          <div class="etiketler-sira"><span class="etiket-cip">Birebir destek</span><span class="etiket-cip">Motivasyon</span><span class="etiket-cip">İletişim</span></div>
+          <p>Antrenmanda, programında ya da aklına takılan herhangi bir konuda bize yazabilirsin.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/hakkimizda.js"></script>
+</body>
+</html>

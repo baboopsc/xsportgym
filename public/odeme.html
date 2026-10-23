@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teslimat ve Ödeme | Xsportgym</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+
+  <main class="sayfa-ic">
+    <div class="kap">
+      <ol class="odeme-adimlari" aria-label="Sipariş adımları">
+        <li class="tamam"><span class="no"><i data-ikon="tik"></i></span><a href="/sepet.html">Sepet</a></li>
+        <li class="simdi"><span class="no">2</span>Teslimat</li>
+        <li><span class="no">3</span>Ödeme</li>
+      </ol>
+      <h1>Teslimat ve <em>ödeme</em></h1>
+      <p id="yukleniyor" class="yukleniyor-yazi">Yükleniyor</p>
+
+      <form class="iki-sutun gizli" id="form" novalidate>
+        <div class="kart">
+          <div class="form-bolum">
+            <h2><i data-ikon="konum"></i>Teslimat bilgileri</h2>
+            <div class="uye-kutu" id="uyeKutu"><i data-ikon="hesap"></i><span>Üye misiniz? <a href="/giris.html?r=%2Fodeme.html">Giriş yapın</a> veya
+              <a href="/giris.html?mod=kayit&r=%2Fodeme.html">üye olun</a>. Üye olmadan da devam edebilirsiniz.</span></div>
+            <div class="alan-satiri">
+              <div><label for="ad">Ad</label><input id="ad" name="ad" autocomplete="given-name" maxlength="50" required></div>
+              <div><label for="soyad">Soyad</label><input id="soyad" name="soyad" autocomplete="family-name" maxlength="50" required></div>
+            </div>
+            <div class="alan-satiri">
+              <div><label for="telefon">Cep telefonu</label><input id="telefon" name="telefon" type="tel" autocomplete="tel" placeholder="05xx xxx xx xx" maxlength="20" required></div>
+              <div><label for="email">E-posta</label><input id="email" name="email" type="email" autocomplete="email" maxlength="120" required></div>
+            </div>
+            <div class="alan-satiri">
+              <div><label for="il">İl</label><select id="il" name="il" required><option value="">Seçin</option></select></div>
+              <div><label for="ilce">İlçe</label><input id="ilce" name="ilce" maxlength="50" required></div>
+            </div>
+            <label for="adres">Açık adres</label>
+            <textarea id="adres" name="adres" rows="3" maxlength="300" autocomplete="street-address" placeholder="Mahalle, cadde/sokak, bina ve daire no" required></textarea>
+            <div class="alan-satiri">
+              <div><label for="postaKodu">Posta kodu <span class="soluk">(isteğe bağlı)</span></label><input id="postaKodu" name="postaKodu" inputmode="numeric" maxlength="5" autocomplete="postal-code"></div>
+              <div></div>
+            </div>
+            <label for="not">Sipariş notu <span class="soluk">(isteğe bağlı)</span></label>
+            <textarea id="not" name="not" rows="2" maxlength="500" placeholder="Örneğin: teslimat için uygun saatler"></textarea>
+            <label class="onay gizli" id="kaydetSatiri"><input type="checkbox" id="adresiKaydet" checked>
+              <span>Bu bilgileri hesabıma kaydet</span></label>
+            <p class="soluk kucuk">Fatura, teslimat adresine düzenlenir. Kişisel verileriniz
+              <a href="/sayfa/kvkk-aydinlatma-metni" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a> kapsamında işlenir.</p>
+          </div>
+
+          <div class="form-bolum">
+            <h2><i data-ikon="belge"></i>Sözleşmeler</h2>
+            <p class="kucuk soluk">Aşağıdaki metinler sipariş bilgilerinizle doldurulmuştur. Lütfen okuyun.</p>
+            <div class="sozlesme-kutu" id="sozlesme" tabindex="0" aria-label="Ön bilgilendirme formu ve mesafeli satış sözleşmesi">Yükleniyor...</div>
+            <label class="onay">
+              <input type="checkbox" id="onay">
+              <span><a href="/sayfa/on-bilgilendirme-formu" target="_blank" rel="noopener">Ön Bilgilendirme Formu</a>'nu ve
+              <a href="/sayfa/mesafeli-satis-sozlesmesi" target="_blank" rel="noopener">Mesafeli Satış Sözleşmesi</a>'ni okudum, onaylıyorum.</span>
+            </label>
+          </div>
+        </div>
+
+        <aside class="yan-ozet">
+          <div class="ozet-kart">
+            <h2>Sipariş özeti</h2>
+            <div id="ozet"></div>
+            <div class="ozet-satir"><span>Kargo</span><span class="noktalar"></span><span class="ucretsiz">Ücretsiz</span></div>
+            <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span id="toplam"></span></div>
+            <div id="hata" class="hata-kutu gizli" role="alert"></div>
+            <p><button type="submit" class="btn tam buyuk" id="odeBtn">Güvenli ödemeye geç</button></p>
+            <p class="guven"><i data-ikon="kilit"></i> Kart bilgileriniz iyzico'nun güvenli sayfasında girilir</p>
+            <div class="kart-markalari" aria-hidden="true"><span>VISA</span><span>MASTERCARD</span><span>TROY</span></div>
+          </div>
+        </aside>
+      </form>
+
+      <div id="bos" class="bos-durum gizli">
+        <span data-cizim="dambil"></span>
+        <h3>Sepetiniz boş</h3>
+        <p>Ödemeye geçmeden önce sepetinize bir paket ekleyin.</p>
+        <a class="btn" href="/paketler.html">Paketlere göz at</a>
+      </div>
+    </div>
+  </main>
+
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/odeme.js"></script>
+</body>
+</html>

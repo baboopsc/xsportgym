@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sepetim | Xsportgym</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+
+  <main class="sayfa-ic">
+    <div class="kap">
+      <ol class="odeme-adimlari" aria-label="Sipariş adımları">
+        <li class="simdi"><span class="no">1</span>Sepet</li>
+        <li><span class="no">2</span>Teslimat</li>
+        <li><span class="no">3</span>Ödeme</li>
+      </ol>
+      <h1>Sepetim <em id="adetYazi" class="soluk"></em></h1>
+      <p id="yukleniyor" class="yukleniyor-yazi">Sepet yükleniyor</p>
+
+      <div id="bos" class="bos-durum gizli">
+        <span data-cizim="dambil" class="cizim-anim"></span>
+        <h3>Sepetiniz henüz boş</h3>
+        <p>Hedefine uygun üyelik ya da personal training paketini seç.</p>
+        <a class="btn buyuk" href="/paketler.html">Paketlere göz at <i data-ikon="ok-capraz"></i></a>
+      </div>
+
+      <div class="iki-sutun gizli" id="dolu">
+        <div>
+          <div id="sorunlar"></div>
+          <div id="satirlar" class="sepet-liste"></div>
+          <a class="ok-link" href="/paketler.html"><i data-ikon="ok-sol"></i> Alışverişe devam et</a>
+        </div>
+        <aside class="yan-ozet">
+          <div class="ozet-kart">
+            <h2>Sipariş özeti</h2>
+            <div class="ozet-satir"><span>Ürünler</span><span class="noktalar"></span><span id="araToplam"></span></div>
+            <div class="ozet-satir"><span>Kargo</span><span class="noktalar"></span><span class="ucretsiz">Ücretsiz</span></div>
+            <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span id="toplam"></span></div>
+            <p><a class="btn tam buyuk" id="odemeBtn" href="/odeme.html">Ödemeye geç <i data-ikon="ok-capraz"></i></a></p>
+            <p class="guven"><i data-ikon="kilit"></i> Ödemeler iyzico güvencesiyle, 3D Secure ile alınır</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer id="alt"></footer>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/sepet.js"></script>
+</body>
+</html>

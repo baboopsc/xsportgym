@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap | Xsportgym</title>
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#0b0d14">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script src="/js/bas.js"></script>
+</head>
+<body>
+  <header id="ust"></header>
+  <main class="giris-sayfa">
+    <div class="giris-gorsel">
+      <div class="gorsel-yeri" data-yer="giris"></div>
+      <blockquote>Üyeliğin, ödemelerin ve paketlerin tek yerde.<small>Xsportgym</small></blockquote>
+    </div>
+
+    <div class="giris-form-alan">
+      <div class="kart">
+        <p class="ust-baslik" id="girisUst">Hoş geldiniz</p>
+        <h1 id="girisBaslik">Hesabınıza <em>giriş yapın</em></h1>
+        <div class="sekme-grubu" id="sekmeler">
+          <button type="button" class="sekme-btn secili" data-mod="giris">Giriş yap</button>
+          <button type="button" class="sekme-btn" data-mod="kayit">Üye ol</button>
+        </div>
+
+        <div id="bilgi" class="uyari-kutu gizli"></div>
+
+        <!-- GİRİŞ -->
+        <form id="girisForm" data-bolum="giris">
+          <label for="gKimlik">E-posta <span class="soluk kucuk">(yönetici: kullanıcı adı)</span></label>
+          <input id="gKimlik" autocomplete="username" maxlength="120" required>
+          <label for="gSifre">Şifre</label>
+          <div class="sifre-alan"><input id="gSifre" type="password" autocomplete="current-password" maxlength="200" required>
+            <button type="button" class="sifre-goster" data-sifre-goster aria-label="Şifreyi göster"><i data-ikon="goz"></i></button></div>
+          <p class="sag-yasla"><a href="#" data-mod-git="unuttum" class="kucuk">Şifremi unuttum</a></p>
+          <button type="submit" class="btn tam buyuk">Giriş yap</button>
+          <p class="soluk kucuk">Üye olmadan da sipariş verebilirsiniz. <a href="/paketler.html">Paketlere göz atın →</a></p>
+        </form>
+
+        <!-- ÜYE OL -->
+        <form id="kayitForm" data-bolum="kayit" class="gizli">
+          <div class="alan-satiri">
+            <div><label for="kAd">Ad</label><input id="kAd" autocomplete="given-name" maxlength="50" required></div>
+            <div><label for="kSoyad">Soyad</label><input id="kSoyad" autocomplete="family-name" maxlength="50" required></div>
+          </div>
+          <label for="kEmail">E-posta</label>
+          <input id="kEmail" type="email" autocomplete="email" maxlength="120" required>
+          <label for="kTelefon">Cep telefonu <span class="soluk kucuk">(isteğe bağlı)</span></label>
+          <input id="kTelefon" type="tel" autocomplete="tel" placeholder="05xx xxx xx xx" maxlength="20">
+          <label for="kSifre">Şifre <span class="soluk kucuk">(en az 8 karakter)</span></label>
+          <div class="sifre-alan"><input id="kSifre" type="password" autocomplete="new-password" minlength="8" maxlength="200" required>
+            <button type="button" class="sifre-goster" data-sifre-goster aria-label="Şifreyi göster"><i data-ikon="goz"></i></button></div>
+          <label class="onay">
+            <input type="checkbox" id="kKvkk">
+            <span><a href="/sayfa/kvkk-aydinlatma-metni" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum.</span>
+          </label>
+          <p></p>
+          <button type="submit" class="btn tam buyuk">Üye ol</button>
+          <p class="soluk kucuk">Üyelikle siparişlerinizi tek yerden takip eder, adresinizi her seferinde yazmazsınız.</p>
+        </form>
+
+        <!-- ŞİFREMİ UNUTTUM -->
+        <form id="unuttumForm" data-bolum="unuttum" class="gizli">
+          <p class="soluk">Üye olurken kullandığınız e-posta adresini yazın, şifre sıfırlama bağlantısı gönderelim.</p>
+          <label for="uEmail">E-posta</label>
+          <input id="uEmail" type="email" autocomplete="email" maxlength="120" required>
+          <p></p>
+          <button type="submit" class="btn tam buyuk">Bağlantı gönder</button>
+          <p><a href="#" data-mod-git="giris" class="ok-link"><i data-ikon="ok-sol"></i> Girişe dön</a></p>
+        </form>
+
+        <!-- YENİ ŞİFRE -->
+        <form id="sifirlaForm" data-bolum="sifirla" class="gizli">
+          <label for="sSifre">Yeni şifre <span class="soluk kucuk">(en az 8 karakter)</span></label>
+          <input id="sSifre" type="password" autocomplete="new-password" minlength="8" maxlength="200" required>
+          <label for="sSifre2">Yeni şifre (tekrar)</label>
+          <input id="sSifre2" type="password" autocomplete="new-password" maxlength="200" required>
+          <p></p>
+          <button type="submit" class="btn tam buyuk">Şifremi değiştir</button>
+        </form>
+
+        <div id="hata" class="hata-kutu gizli" role="alert"></div>
+      </div>
+    </div>
+  </main>
+  <script src="/js/ikonlar.js"></script>
+  <script src="/js/gorseller.js"></script>
+  <script src="/js/ortak.js"></script>
+  <script src="/js/giris.js"></script>
+</body>
+</html>
