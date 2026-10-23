@@ -22,7 +22,7 @@
       </a>
       <nav class="sekmeler" role="tablist" aria-label="Panel bölümleri">
         <button class="sekme secili" data-sekme="siparisler" role="tab"><i data-ikon="liste"></i><span>Siparişler</span><span class="sekme-sayi gizli" id="yeniSayi"></span></button>
-        <button class="sekme" data-sekme="urunler" role="tab"><i data-ikon="filiz"></i><span>Ürünler</span></button>
+        <button class="sekme" data-sekme="urunler" role="tab"><i data-ikon="dambil"></i><span>Paketler</span></button>
         <button class="sekme" data-sekme="uyeler" role="tab"><i data-ikon="kullanicilar"></i><span>Üyeler</span></button>
         <button class="sekme" data-sekme="hesap" role="tab"><i data-ikon="hesap"></i><span>Hesabım</span></button>
       </nav>
@@ -41,7 +41,7 @@
       <header class="panel-ust">
         <div>
           <p class="ust-baslik" id="panelTarih"></p>
-          <h1 id="panelBaslik">Siparişler</h1>
+          <h1 id="panelBaslik">Öğrenciler ve siparişler</h1>
         </div>
       </header>
       <div id="uyarilar"></div>
@@ -61,8 +61,8 @@
       <!-- ÜRÜNLER -->
       <section id="urunlerSekmesi" class="gizli">
         <div class="arac-satiri">
-          <p class="soluk kucuk">Sıra numarası küçük olan ürün sitede önce görünür. Ana sayfada ilk 8 ürün gösterilir.</p>
-          <button class="btn" id="yeniUrun" type="button">Yeni ürün <i data-ikon="arti"></i></button>
+          <p class="soluk kucuk">Sıra numarası küçük olan paket sitede önce görünür. Ana sayfada ilk 4 paket gösterilir.</p>
+          <button class="btn" id="yeniUrun" type="button">Yeni paket <i data-ikon="arti"></i></button>
         </div>
         <div id="urunListesi" class="urun-tablo"></div>
       </section>
@@ -93,24 +93,24 @@
 
       <!-- ÜRÜN DÜZENLE -->
       <section id="urunDuzenle" class="gizli">
-        <p><button id="urunlereDon" type="button" class="ok-link"><i data-ikon="ok-sol"></i> Ürünlere dön</button></p>
+        <p><button id="urunlereDon" type="button" class="ok-link"><i data-ikon="ok-sol"></i> Paketlere dön</button></p>
         <div class="duzenle-izgara">
           <div>
             <div class="kart">
-              <h2 id="urunBaslik">Yeni ürün</h2>
+              <h2 id="urunBaslik">Yeni paket</h2>
               <form id="urunForm">
                 <div class="alan-satiri">
-                  <div><label for="uAd">Ürün adı</label><input id="uAd" class="genis" maxlength="100" placeholder="ör. Kiraz Fidanı" required></div>
-                  <div><label for="uLatince">Latince adı <span class="kucuk soluk">(isteğe bağlı)</span></label><input id="uLatince" class="genis" maxlength="80" placeholder="ör. Prunus avium"></div>
+                  <div><label for="uAd">Paket adı</label><input id="uAd" class="genis" maxlength="100" placeholder="ör. Online Koçluk" required></div>
+                  <div><label for="uLatince">Slogan <span class="kucuk soluk">(isteğe bağlı)</span></label><input id="uLatince" class="genis" maxlength="80" placeholder="ör. Değişime benimle başla"></div>
                 </div>
                 <label for="uKategori">Kategori</label>
-                <input id="uKategori" class="genis" maxlength="50" list="kategoriListesi" placeholder="ör. Meyve Fidanı" required>
+                <input id="uKategori" class="genis" maxlength="50" list="kategoriListesi" placeholder="ör. Online Koçluk" required>
                 <datalist id="kategoriListesi"></datalist>
-                <label for="uAciklama">Açıklama <span class="kucuk soluk">(ilk paragraf ürünün üstünde kısa tanıtım olarak görünür)</span></label>
-                <textarea id="uAciklama" rows="6" maxlength="5000" placeholder="Fidanın özellikleri, meyvesi, nerelere uygun olduğu..."></textarea>
+                <label for="uAciklama">Açıklama <span class="kucuk soluk">(ilk paragraf paketin üstünde kısa tanıtım olarak görünür)</span></label>
+                <textarea id="uAciklama" rows="6" maxlength="5000" placeholder="Paket kimler için, neler içeriyor, süreç nasıl işliyor..."></textarea>
 
-                <h3 class="alt-baslik"><i data-ikon="yaprak"></i> Dikim ve bakım bilgileri</h3>
-                <p class="soluk kucuk">Ürün sayfasında ikonlarla gösterilir. Boş bıraktıklarınız görünmez.</p>
+                <h3 class="alt-baslik"><i data-ikon="liste"></i> Paket içeriği</h3>
+                <p class="soluk kucuk">Paket sayfasında "Bu pakette neler var?" bölümünde ikonlarla gösterilir. Boş bıraktıklarınız görünmez.</p>
                 <div class="bakim-alanlari" id="bakimAlanlari"></div>
 
                 <div class="alan-satiri">
@@ -126,9 +126,9 @@
           <div id="urunEkler" class="gizli">
             <div class="kart">
               <h3>Seçenekler ve fiyatlar</h3>
-              <p class="kucuk soluk">Her fidanın en az bir seçeneği olmalı (ör. "1 yaşlı", "2 yaşlı", "Saksılı"). Fiyatı 750 veya 750,50 şeklinde yazın.</p>
+              <p class="kucuk soluk">Her paketin en az bir süre seçeneği olmalı (ör. "1 aylık", "3 aylık", "6 aylık"). Fiyatı 1500 veya 1500,50 şeklinde yazın. Kontenjan: bu seçenekten kaç kişi alabilir (her satışta 1 azalır, sınır istemiyorsanız 999 yazın).</p>
               <table class="secenek-tablo">
-                <thead><tr><th>Seçenek</th><th>Fiyat (TL)</th><th>Stok</th><th>Satışta</th><th></th></tr></thead>
+                <thead><tr><th>Süre seçeneği</th><th>Fiyat (TL)</th><th>Kontenjan</th><th>Satışta</th><th></th></tr></thead>
                 <tbody id="secenekSatirlari"></tbody>
               </table>
               <p class="hata" id="secenekHata"></p>
@@ -136,7 +136,7 @@
 
             <div class="kart">
               <h3>Fotoğraflar</h3>
-              <p class="kucuk soluk">İlk fotoğraf kapak fotoğrafıdır. Fotoğraflar yüklenmeden önce otomatik küçültülür. En güzel sonuç için fidanı açık renk, sade bir zeminde dik olarak çekin.</p>
+              <p class="kucuk soluk">İlk fotoğraf kapak fotoğrafıdır. Fotoğraflar yüklenmeden önce otomatik küçültülür. En güzel sonuç için yatay (4:3) ve aydınlık fotoğraflar kullanın.</p>
               <div class="gorsel-izgara" id="gorseller"></div>
               <label class="yukle-alani" for="gorselSec"><i data-ikon="yukle"></i><span><strong>Fotoğraf seç</strong> veya buraya bırak</span>
                 <input type="file" id="gorselSec" accept="image/jpeg,image/png,image/webp" multiple></label>
@@ -144,9 +144,9 @@
             </div>
 
             <div class="kart tehlike-kart">
-              <h3>Ürünü sil</h3>
-              <p class="kucuk soluk">Silinen ürün geri getirilemez. Geçmiş siparişlerdeki bilgiler korunur. Satışı durdurmak için silmek yerine "Sitede görünsün" kutusunu kaldırabilirsiniz.</p>
-              <button class="tehlike" id="urunSil" type="button"><i data-ikon="cop"></i> Ürünü sil</button>
+              <h3>Paketi sil</h3>
+              <p class="kucuk soluk">Silinen paket geri getirilemez. Geçmiş siparişlerdeki bilgiler korunur. Satışı durdurmak için silmek yerine "Sitede görünsün" kutusunu kaldırabilirsiniz.</p>
+              <button class="tehlike" id="urunSil" type="button"><i data-ikon="cop"></i> Paketi sil</button>
             </div>
           </div>
         </div>

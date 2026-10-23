@@ -79,6 +79,32 @@
     return `https://wa.me/${n}?text=${encodeURIComponent('Merhaba, Xsportgym hakkında bilgi almak istiyorum.')}`;
   }
 
+  // ---------- Online koçluk seçenekleri (Online Koçluk · 1 aylık / 3 aylık / 6 aylık ...) ----------
+  const tl = k => `${(Math.round(k / 100)).toLocaleString('tr-TR')} TL`;
+  const adHtml = m => esc(m).replace(/\b(online|coaching|personal|training|fitness)\b/gi, k => `<span lang="en">${k}</span>`);
+  const json = url => fetch(url, { credentials: 'same-origin' }).then(c => (c.ok ? c.json() : Promise.reject(new Error(c.status))));
+  json('/api/urunler')
+    .then(urunler => Promise.all(urunler.map(u => json(`/api/urunler/${encodeURIComponent(u.slug)}`))))
+    .then((detaylar) => {
+      const butonlar = [];
+      for (const u of detaylar) {
+        for (const s of u.secenekler) {
+          if (s.stok === 0) continue;
+          const ay = Number((/(\d+)\s*ay/i.exec(s.ad) || [])[1]) || 0;
+          const alt = ay > 1 ? `${tl(s.fiyatKurus)} · ayda ${tl(s.fiyatKurus / ay)}` : tl(s.fiyatKurus);
+          butonlar.push(`<a class="link-btn" href="/urun.html?u=${encodeURIComponent(u.slug)}&s=${encodeURIComponent(s.id)}">
+            <span class="link-btn__ikon"><i data-ikon="${u.kategori === 'Program' ? 'not' : 'dambil'}"></i></span>
+            <span class="link-btn__yazi"><b>${adHtml(u.ad)} · ${esc(s.ad)}</b><small>${esc(alt)}</small></span><i data-ikon="ok-capraz"></i></a>`);
+        }
+      }
+      if (!butonlar.length) return;
+      const liste = document.getElementById('koclukListe');
+      liste.innerHTML = butonlar.join('');
+      Ikon.yerlestir(liste);
+      document.getElementById('kocluk').classList.remove('gizli');
+    })
+    .catch(() => { /* paketler gelmezse "Tüm paketler" butonu yeterli */ });
+
   fetch('/api/isletme', { credentials: 'same-origin' })
     .then(c => (c.ok ? c.json() : null))
     .then((i) => {

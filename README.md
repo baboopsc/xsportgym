@@ -6,25 +6,30 @@ sistemi üzerine kuruldu; renkler Xsportgym logosundaki koyu zemin ve neon mavi-
 
 ## Durum
 
-**Tamamlanan (1. aşama: vitrin)**
-- Koyu neon tema (`public/css/site.css` içindeki `:root` değişkenleri), SVG logo (`public/img/logo.svg`, `logo-x.svg`), favicon
-- Ana sayfa: büyük görsel kartı, tanıtım, saatler, kampanyalar (PT hediye ders, arkadaşını getir), paketler,
-  görsel bandı, neden biz, antrenör kartı, sık sorulanlar ve iletişim
-- Hakkımızda: Selen Mışraklı'nın hikâyesi, haftalık çalışma saatleri grafiği, değerler
-- **Link sayfası (`/link`)**: taplink yerine. "Şu an açık / kapalı" bilgisini Türkiye saatine göre kendisi hesaplar;
-  WhatsApp ve telefon `isletme-bilgileri.json` doluysa otomatik eklenir
-- Paketler sayfası (eski fidan kataloğu), giriş, sepet ve 404 sayfaları yeni temada
+**Ne satılıyor:** Selen Mışraklı'nın **online koçluk** paketleri (salon üyeliği değil). Fiziksel ürün yok, kargo yok.
+iyzico'ya ürün tipi "sanal" (VIRTUAL) gider, müşteriden sadece fatura adresi istenir.
 
-**Sıradaki (2. aşama: üyelik)**
-- Sepet/kargo/adres akışı yerine "paketi seç → iyzico ile öde → üyelik başlasın"
-- Üyelik başlangıç-bitiş tarihi, kalan gün, panelde üye listesi
-- Sözleşme metinlerinin (mesafeli satış, ön bilgilendirme, iade) hizmet satışına göre yeniden yazılması
-- Ürün detay sayfasındaki fidan bakım bölümlerinin paket ayrıntılarına çevrilmesi
+**Tamamlanan**
+- Tasarım: kemik beyazı + turuncu tema (`public/css/site.css` başındaki `:root`), Anton + Barlow Condensed başlıklar.
+  Diğer paletler denenebilir: adresin sonuna `?tema=volt`, `?tema=kirmizi`, `?tema=lacivert` (geçici önizleme, `public/js/bas.js`).
+- Ana sayfa: salon tanıtımı, kampanyalar, **online koçluk fiyat kartları** (paketlerden otomatik; "3 aylık" gibi adlardan
+  aylık tutar hesaplanır, aylık en ucuz seçenek "En avantajlı" olur), "nasıl işler" adımları, SSS.
+- Paket sayfası: süre seçimi (1/3/6 ay), "Hemen başla", paket içeriği (süre, program, beslenme, takip...).
+  `urun.html?u=online-kocluk&s=SEÇENEK_NO` ile istenen süre seçili açılır.
+- Link sayfası (`/link`): Instagram bio'su için. Açık/kapalı durumu, online koçluk seçenekleri (paketlerden otomatik), iletişim.
+- Ödeme: "Seni tanıyalım" formu (hedef notu dahil), hizmetin cayma süresinde başlamasına dair onay, iyzico.
+- Panel: siparişler = öğrenciler. Durumlar: **Yeni öğrenci → Program hazırlanıyor → Koçluk sürüyor → Tamamlandı**.
+  "Koçluk sürüyor"a alınca müşteriye "Koçluğun başladı" e-postası gider. Paketler sekmesinde süre seçenekleri,
+  fiyat ve kontenjan (999 = sınırsız gibi).
+- Sözleşmeler (`lib/sozlesmeler.js`): hizmet satışına göre yeniden yazıldı. **TASLAKTIR, avukata kontrol ettirin.**
+
+**Deneme paketleri:** `node kurulum.js --ornek` (veritabanında paket yoksa). Fiyatlar yer tutucudur, panelden değiştirin.
 
 **Doldurulacaklar**
 - `isletme-bilgileri.json`: telefon, WhatsApp, e-posta, unvan, vergi bilgileri
-- `public/js/gorseller.js`: salon fotoğrafları (her yerin önerilen oranı dosyada yazıyor)
-- Kampanya ayrıntıları (ana sayfa ve `/link`): Instagram'daki görsellerden alındı, salonla teyit edilmeli
+- `public/js/gorseller.js`: salon ve Selen fotoğrafları
+- Gerçek paket fiyatları ve içerikleri (panelden)
+- E-posta (SMTP) ayarları: Selen'in "Yeni öğrenci" bildirimlerini alması için
 
 ## Güvenlik önlemleri
 
@@ -57,13 +62,12 @@ node server.js
 Sunucu açılırken veritabanı tablolarını kendisi oluşturur/günceller. Boş veritabanına örnek ürün eklemek için:
 
 ```
-node kurulum.js --ornek     # 6 örnek fidan, bütün bakım bilgileriyle
-node kurulum.js --katalog   # 35 fidan çeşidi (deneme kataloğu)
+node kurulum.js --ornek     # deneme paketleri: Online Koçluk (1/3/6 aylık) + Antrenman Programı ve Beslenme Planı
 ```
 
 `--katalog` ile eklenen çeşitlerin fiyatı **geçici olarak 650 TL**, stoğu 20'dir ve fotoğrafları yoktur.
 Satışa açmadan önce panelden her birinin fiyatını, stoğunu ve fotoğrafını düzenleyin; satmayacağınız çeşitleri silin.
-Aynı adlı bir fidan zaten varsa tekrar eklenmez.
+Veritabanında paket varsa hiçbir şey eklenmez.
 
 - Site: http://localhost:3000
 - Panel: http://localhost:3000/admin.html

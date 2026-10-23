@@ -175,7 +175,7 @@ function urunBilgileri(b, kismi = false) {
   if (var_('kategori')) sonuc.kategori = dogrulama.metinAlani(b.kategori, { ad: 'Kategori', min: 2, maks: 50 });
   if (var_('aciklama')) sonuc.aciklama = dogrulama.metinAlani(b.aciklama, { ad: 'Açıklama', maks: 5000, zorunlu: false, cokSatirli: true });
   // Latince ad ve bakım bilgileri her zaman isteğe bağlı
-  if (b.latinceAd !== undefined) sonuc.latince_ad = dogrulama.metinAlani(b.latinceAd, { ad: 'Latince ad', maks: 80, zorunlu: false });
+  if (b.latinceAd !== undefined) sonuc.latince_ad = dogrulama.metinAlani(b.latinceAd, { ad: 'Slogan', maks: 80, zorunlu: false });
   if (b.bakim !== undefined) sonuc.bakim = JSON.stringify(bakimBilgileri(b.bakim));
   if (var_('aktif')) {
     if (typeof b.aktif !== 'boolean') throw new KullaniciHatasi('Aktif bilgisi geçersiz.');
@@ -203,7 +203,7 @@ function secenekBilgileri(b, kismi = false) {
   }
   if (var_('stok')) {
     const stok = Number(b.stok);
-    if (!Number.isInteger(stok) || stok < 0 || stok > 100000) throw new KullaniciHatasi('Stok 0 veya daha büyük bir tam sayı olmalı.');
+    if (!Number.isInteger(stok) || stok < 0 || stok > 100000) throw new KullaniciHatasi('Kontenjan 0 veya daha büyük bir tam sayı olmalı.');
     sonuc.stok = stok;
   }
   if (var_('aktif')) {
@@ -339,7 +339,7 @@ router.post('/urunler/:id/gorseller',
       if (!u) throw new KullaniciHatasi('Ürün bulunamadı.', 404);
       const { rows: [{ adet, sira }] } = await client.query(
         'SELECT COUNT(*)::int AS adet, COALESCE(MAX(sira), -1) + 1 AS sira FROM urun_gorselleri WHERE urun_id = $1', [urunId]);
-      if (adet >= MAKS_GORSEL) throw new KullaniciHatasi(`Bir ürüne en fazla ${MAKS_GORSEL} görsel eklenebilir.`);
+      if (adet >= MAKS_GORSEL) throw new KullaniciHatasi(`Bir pakete en fazla ${MAKS_GORSEL} görsel eklenebilir.`);
       const { rows: [yeni] } = await client.query(
         'INSERT INTO urun_gorselleri (urun_id, mime, veri, boyut, sira) VALUES ($1, $2, $3, $4, $5) RETURNING id',
         [urunId, mime, req.body, req.body.length, sira]);

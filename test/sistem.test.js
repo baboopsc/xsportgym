@@ -84,7 +84,7 @@ function testleriCalistir() {
       SMTP_PORT: String(smtpPort),
       SMTP_SECURE: 'false',
       SMTP_KULLANICI: '',
-      EPOSTA_GONDEREN: 'Özyurt Test <magaza@example.com>',
+      EPOSTA_GONDEREN: 'Xsportgym Test <magaza@example.com>',
       ADMIN_EPOSTA: 'sahip@example.com',
       ARAS_TAKIP_URL: 'https://kargo.example/takip?no={NO}',
       ISLER_KAPALI: '1',
@@ -235,18 +235,18 @@ function testleriCalistir() {
     // Dikim ve bakım bilgileri: bilinmeyen alan atılır, boşlar kaydedilmez, çok uzun metin reddedilir
     r = await panel(`/urunler/${elmaUrun}`, {
       method: 'PATCH',
-      govde: { latinceAd: 'Malus domestica', bakim: { dikim: 'Kasım – Mart', gunes: ' Tam güneş ', sulama: '', zararli: '<script>' } }
+      govde: { latinceAd: 'Değişime benimle başla', bakim: { sure: '3 ay', program: ' Haftalık, kişiye özel ', beslenme: '', zararli: '<script>' } }
     });
     assert.equal(r.durum, 200, r.metin);
     const bakimli = (await istek('/api/urunler/asili-elma-fidani')).json;
-    assert.equal(bakimli.latinceAd, 'Malus domestica');
-    assert.deepEqual(bakimli.bakim, { dikim: 'Kasım – Mart', gunes: 'Tam güneş' });
-    assert.equal((await istek('/api/urunler')).json[0].latinceAd, 'Malus domestica');
-    r = await panel(`/urunler/${elmaUrun}`, { method: 'PATCH', govde: { bakim: { boy: 'x'.repeat(81) } } });
+    assert.equal(bakimli.latinceAd, 'Değişime benimle başla');
+    assert.deepEqual(bakimli.bakim, { sure: '3 ay', program: 'Haftalık, kişiye özel' });
+    assert.equal((await istek('/api/urunler')).json[0].latinceAd, 'Değişime benimle başla');
+    r = await panel(`/urunler/${elmaUrun}`, { method: 'PATCH', govde: { bakim: { sure: 'x'.repeat(81) } } });
     assert.equal(r.durum, 400);
     r = await panel(`/urunler/${elmaUrun}`, { method: 'PATCH', govde: { bakim: 'metin' } });
     assert.equal(r.durum, 400);
-    assert.deepEqual((await panel('/urunler')).json.find(u => u.id === elmaUrun).bakim, { dikim: 'Kasım – Mart', gunes: 'Tam güneş' });
+    assert.deepEqual((await panel('/urunler')).json.find(u => u.id === elmaUrun).bakim, { sure: '3 ay', program: 'Haftalık, kişiye özel' });
   });
 
   test('sepet fiyatı sunucuda hesaplanır, stok ve geçersiz ürün yakalanır', async () => {
@@ -334,7 +334,7 @@ function testleriCalistir() {
     // müşteri sipariş sayfası
     const gor = await istek(`/api/siparis/${siparisNo}?k=${s.takip_kodu}`);
     assert.equal(gor.durum, 200);
-    assert.equal(gor.json.durumAdi, 'Sipariş alındı');
+    assert.equal(gor.json.durumAdi, 'Ödeme alındı');
     assert.equal(gor.json.alici.il, 'Denizli');
     assert.equal(gor.json.email, undefined, 'e-posta herkese açık görünümde olmamalı');
     assert.equal((await istek(`/api/siparis/${siparisNo}?k=${'0'.repeat(40)}`)).durum, 404);
@@ -446,28 +446,26 @@ function testleriCalistir() {
     assert.ok(ben.uyarilar.some(u => /stok yetersizdi/.test(u.mesaj)));
   });
 
-  test('panel: sipariş durumu, kargo, iptal ve e-postalar', async () => {
+  test('panel: sipariş durumu (koçluk adımları), iptal ve e-postalar', async () => {
     const { token, siparisNo } = await siparisVer([{ secenekId: elma, adet: 1 }], { ...MUSTERI, adres: 'Mah. <img src=x onerror=alert(1)> Sok. 5' });
     await geriDonus(token);
     const s = await siparisAl(siparisNo);
     const yol = `/siparisler/${s.id}`;
 
-    assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'kargoda' } })).durum, 400, 'takip no olmadan kargoya verilemez');
-    assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'teslim-edildi' } })).durum, 400, 'kargoya verilmeden teslim edilemez');
+    // Online koçluk: "Koçluk sürüyor" (kargoda) adımı için takip numarası gerekmez
+    assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'teslim-edildi' } })).durum, 400, 'koçluk başlamadan tamamlanamaz');
     assert.equal((await panel(yol, { method: 'PATCH', govde: { kargoTakipNo: 'abc def!' } })).durum, 400);
     assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'hazirlaniyor' } })).durum, 200);
-    assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'kargoda', kargoTakipNo: '1234 5678 90' } })).durum, 200);
-    assert.equal((await siparisAl(siparisNo)).kargo_takip_no, '1234567890');
+    assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'kargoda' } })).durum, 200, 'takip no olmadan koçluk başlatılabilir');
+    assert.equal((await siparisAl(siparisNo)).kargo_takip_no, null);
     assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'kargoda' } })).durum, 400, 'değişiklik yoksa hata');
     assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'teslim-edildi' } })).durum, 200);
     assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'odendi' } })).durum, 400, 'geri gidilemez');
 
     await epostalariGonder();
     const cozulmus = smtp.postalar.map(p => postaCoz(p.veri)).filter(p => p.html.includes(`#${siparisNo}`));
-    const kargoPostasi = cozulmus.find(p => p.html.includes('kargoya verildi'));
-    assert.ok(kargoPostasi, 'kargo e-postası gitmeli');
-    assert.match(kargoPostasi.html, /kargo\.example\/takip\?no=1234567890/);
-    assert.ok(cozulmus.some(p => p.html.includes('teslim edildi')), 'teslim e-postası gitmeli');
+    assert.ok(cozulmus.some(p => p.html.includes('programın hazır')), '"koçluğun başladı" e-postası gitmeli');
+    assert.ok(cozulmus.some(p => p.html.includes('süresi tamamlandı')), '"tamamlandı" e-postası gitmeli');
     const tumHtml = cozulmus.map(p => p.html).join('\n');
     assert.match(tumHtml, /&lt;img src=x/, 'adres e-postada görünmeli');
     assert.doesNotMatch(tumHtml, /<img src=x/, 'müşteri girdisi HTML e-postada kaçışlanmalı');
@@ -596,7 +594,7 @@ function testleriCalistir() {
     for (const ad of ['mesafeli-satis-sozlesmesi', 'on-bilgilendirme-formu', 'kvkk-aydinlatma-metni', 'iptal-ve-iade-kosullari', 'teslimat-kosullari', 'gizlilik-ve-cerez-politikasi', 'iletisim']) {
       const r = await istek(`/sayfa/${ad}`);
       assert.equal(r.durum, 200, ad);
-      assert.match(r.metin, /Özyurt Fidancılık/);
+      assert.match(r.metin, /Xsportgym/);
     }
     assert.equal((await istek('/sayfa/constructor')).durum, 404);
     assert.equal((await istek('/sayfa/__proto__')).durum, 404);
@@ -649,7 +647,7 @@ function testleriCalistir() {
     assert.equal(r.json.kullanici.ilce, 'Pamukkale');
     const liste = (await h('/siparislerim', { cerez })).json;
     assert.equal(liste.length, 1);
-    assert.equal(liste[0].durumAdi, 'Sipariş alındı');
+    assert.equal(liste[0].durumAdi, 'Ödeme alındı');
     assert.equal(liste[0].k, uyeSiparisi.takip_kodu);
     // üye olmadan verilen siparişler bu listede görünmez (aynı e-postayla bile)
     assert.equal((await h('/siparislerim')).durum, 401);

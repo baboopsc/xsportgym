@@ -3,10 +3,10 @@
   const { esc, tl, api, parametre, ikon, hazirla } = Site;
   const $ = id => document.getElementById(id);
   const ADIMLAR = [
-    ['odendi', 'Sipariş alındı', 'liste'],
-    ['hazirlaniyor', 'Hazırlanıyor', 'paket'],
-    ['kargoda', 'Kargoda', 'kargo'],
-    ['teslim-edildi', 'Teslim edildi', 'agac']
+    ['odendi', 'Ödeme alındı', 'liste'],
+    ['hazirlaniyor', 'Program hazırlanıyor', 'not'],
+    ['kargoda', 'Koçluk başladı', 'dambil'],
+    ['teslim-edildi', 'Tamamlandı', 'kupa']
   ];
   const SIRA = { 'inceleme': 0, 'odendi': 0, 'hazirlaniyor': 1, 'kargoda': 2, 'teslim-edildi': 3 };
   const tarih = t => (t ? new Date(t).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' }) : '');
@@ -23,7 +23,7 @@
       </div>`;
     const bilgi = {
       'odeme-bekliyor': kutu('uyari-kutu', 'saat', 'Ödemeniz kontrol ediliyor. Kartınızdan para çekildiyse siparişiniz birkaç dakika içinde onaylanır.'),
-      'inceleme': kutu('uyari-kutu', 'saat', 'Ödemeniz kısa bir güvenlik kontrolünden geçiyor. Onaylanınca siparişiniz hazırlanacak.'),
+      'inceleme': kutu('uyari-kutu', 'saat', 'Ödemeniz kısa bir güvenlik kontrolünden geçiyor. Onaylanınca seninle iletişime geçeceğiz.'),
       'odeme-basarisiz': kutu('hata-kutu', 'uyari', 'Bu siparişin ödemesi tamamlanmadı. Kartınızdan para çekilmedi.'),
       'terk-edildi': kutu('hata-kutu', 'uyari', 'Bu siparişin ödemesi tamamlanmadı. Kartınızdan para çekilmedi.'),
       'baslatilamadi': kutu('hata-kutu', 'uyari', 'Bu siparişin ödemesi başlatılamadı. Kartınızdan para çekilmedi.'),
@@ -39,23 +39,17 @@
       <p class="soluk kucuk">${esc(tarih(s.tarih))}</p>
       ${adimlar}
       ${bilgi}
-      ${s.kargoTakipNo ? `
-        <div class="basari-kutu">${ikon('kargo')}<span>
-          ${esc(s.kargoFirmasi)} takip numaranız: <strong>${esc(s.kargoTakipNo)}</strong><br>
-          <a href="${esc(s.kargoTakipUrl)}" target="_blank" rel="noopener noreferrer">Kargonuzu takip edin →</a></span>
-        </div>` : ''}
       <div class="ozet-kart">
-        ${s.kalemler.map(x => `<div class="ozet-satir"><span>${esc(x.urunAdi)} <span class="soluk">(${esc(x.secenekAdi)}) × ${x.adet}</span></span><span class="noktalar"></span><span>${tl(x.birimFiyatKurus * x.adet)}</span></div>`).join('')}
-        <div class="ozet-satir"><span>Kargo</span><span class="noktalar"></span><span class="ucretsiz">Ücretsiz</span></div>
+        ${s.kalemler.map(x => `<div class="ozet-satir"><span>${esc(x.urunAdi)} <span class="soluk">(${esc(x.secenekAdi)})</span></span><span class="noktalar"></span><span>${tl(x.birimFiyatKurus * x.adet)}</span></div>`).join('')}
         <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span>${tl(s.toplamKurus)}</span></div>
       </div>
       <div class="bilgi-satirlari">
-        <div><small>Teslimat</small>${esc(s.alici.adSoyad)}<br><span class="soluk">${esc(s.alici.ilce)} / ${esc(s.alici.il)}</span></div>
-        <div><small>Kargo</small>${esc(s.kargoFirmasi || 'Aras Kargo')}<br><span class="soluk">Ücretsiz gönderim</span></div>
+        <div><small>Öğrenci</small>${esc(s.alici.adSoyad)}<br><span class="soluk">${esc(s.alici.ilce)} / ${esc(s.alici.il)}</span></div>
+        <div><small>Koçluk</small>Online<br><span class="soluk">Telefon ve e-posta ile iletişim</span></div>
         ${s.sozlesmeVar ? `<div><small>Belgeler</small><a href="/siparis/${encodeURIComponent(no)}/sozlesme?k=${encodeURIComponent(k)}" target="_blank" rel="noopener">Sözleşmelerimi görüntüle</a></div>` : ''}
       </div>`;
     $('siparis').classList.remove('gizli');
-    $('basAciklama').textContent = 'Siparişinizin son durumu aşağıda. Kargoya verildiğinde takip numaranız burada ve e-postanızda görünür.';
+    $('basAciklama').textContent = 'Siparişinin son durumu aşağıda. Koçluğun başladığında burada ve e-postanda görünür.';
     hazirla($('siparis'));
     // İlerleme çizgisi yavaşça dolsun
     const cizgi = $('takipAdimlar');

@@ -87,7 +87,7 @@
     const musteri = formuOku();
     const eksik = ['ad', 'soyad', 'telefon', 'email', 'il', 'ilce', 'adres'].find(a => !musteri[a]);
     if (eksik) {
-      hataGoster('Lütfen teslimat bilgilerini eksiksiz doldurun.');
+      hataGoster('Lütfen bilgilerini eksiksiz doldur.');
       $(eksik).focus();
       return;
     }

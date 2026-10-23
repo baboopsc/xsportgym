@@ -1,15 +1,15 @@
 'use strict';
-// Ürün sayfası: galeri, seçenekler, sepete ekleme, bakım bilgileri, benzer fidanlar
+// Paket sayfası: galeri, seçenekler (1/3/6 ay gibi), satın alma, paket içeriği, diğer paketler
 (() => {
-  const { esc, tlKisa, api, gorselUrl, parametre, bildir, sepeteEkle, sepetOku, ikon, urunKarti, yerlestir, hazirla, sepeteUcur, isletmeAl, dolu } = Site;
+  const { esc, adHtml, tlKisa, api, gorselUrl, parametre, bildir, sepeteEkle, sepetOku, ikon, urunKarti, yerlestir, hazirla, sepeteUcur, isletmeAl, dolu } = Site;
   const $ = id => document.getElementById(id);
   let urun = null;
 
   // [alan, ikon, başlık]
   const BAKIM = [
-    ['dikim', 'takvim', 'Dikim zamanı'], ['gunes', 'gunes', 'Güneş'], ['sulama', 'damla', 'Sulama'],
-    ['toprak', 'toprak', 'Toprak'], ['meyve', 'agac', 'Meyve verme'], ['hasat', 'elma', 'Hasat'],
-    ['soguk', 'kar', 'Soğuğa dayanıklılık'], ['boy', 'boy', 'Ağaç boyu'], ['tozlasma', 'cicek', 'Tozlaşma']
+    ['sure', 'takvim', 'Süre'], ['program', 'dambil', 'Antrenman programı'], ['beslenme', 'elma', 'Beslenme planı'],
+    ['takip', 'grafik', 'Takip'], ['iletisim', 'whatsapp', 'İletişim'], ['guncelleme', 'yenile', 'Program güncelleme'],
+    ['seviye', 'yildiz', 'Seviye'], ['yer', 'konum', 'Nerede uygulanır'], ['baslangic', 'yildirim', 'Başlangıç']
   ];
 
   function seciliSecenek() {
@@ -17,9 +17,10 @@
     return secili ? urun.secenekler.find(s => s.id === Number(secili.value)) : null;
   }
 
+  // Koçluk paketinden bir tane alınır (sepette zaten varsa tekrar eklenmez)
   function enFazlaAdet(s) {
     const sepettekiAdet = s ? (sepetOku().find(x => x.secenekId === s.id)?.adet || 0) : 0;
-    return s ? Math.max(Math.min(s.stok, 10) - sepettekiAdet, 0) : 0;
+    return s ? Math.max(Math.min(s.stok, 1) - sepettekiAdet, 0) : 0;
   }
 
   function adetSiniriniGuncelle() {
@@ -31,13 +32,12 @@
     const fiyat = s ? tlKisa(s.fiyatKurus) : tlKisa(Math.min(...urun.secenekler.map(x => x.fiyatKurus)));
     $('fiyat').textContent = fiyat;
     $('yFiyat').textContent = s ? `${s.ad} · ${fiyat}` : fiyat;
-    const metin = !s ? 'Seçenek seçin' : (s.stok === 0 ? 'Tükendi' : (enFazla === 0 ? 'Hepsi sepetinizde' : 'Sepete ekle'));
-    for (const btn of [$('ekleBtn'), $('yEkle')]) {
-      btn.disabled = !s || enFazla === 0;
-      btn.textContent = metin;
-    }
+    const metin = !s ? 'Süre seçin' : (s.stok === 0 ? 'Kontenjan dolu' : (enFazla === 0 ? 'Sepetinde' : 'Sepete ekle'));
+    $('ekleBtn').disabled = !s || enFazla === 0;
+    $('ekleBtn').textContent = metin;
+    $('yEkle').disabled = !s || s.stok === 0;
     $('hemenAl').disabled = !s || (s.stok === 0);
-    $('secenekBilgi').textContent = s && s.stok > 0 && s.stok <= 3 ? `Son ${s.stok} adet` : '';
+    $('secenekBilgi').textContent = s && s.stok > 0 && s.stok <= 3 ? `Son ${s.stok} kontenjan` : '';
   }
 
   function gorselSec(id) {
@@ -56,8 +56,8 @@
 
   function ciz() {
     document.title = `${urun.ad} | Xsportgym`;
-    $('kategori').textContent = urun.kategori;
-    $('ad').textContent = urun.ad;
+    $('kategori').innerHTML = adHtml(urun.kategori);
+    $('ad').innerHTML = adHtml(urun.ad);
     $('yAd').textContent = urun.ad;
     if (urun.latinceAd) { $('latin').textContent = urun.latinceAd; $('latin').classList.remove('gizli'); }
     $('yol').insertAdjacentHTML('beforeend', `${ikon('sag')}<a href="/paketler.html?kategori=${encodeURIComponent(urun.kategori)}">${esc(urun.kategori)}</a>${ikon('sag')}<span>${esc(urun.ad)}</span>`);
@@ -88,14 +88,16 @@
     }
 
     // Seçenekler
-    const ilkStoktaki = urun.secenekler.find(s => s.stok > 0);
+    // Adreste ?s=SEÇENEK_NO varsa (ör. link sayfasındaki "3 aylık" butonu) o seçenek seçili gelir
+    const istenen = urun.secenekler.find(s => s.id === Number(parametre('s')) && s.stok > 0);
+    const ilkStoktaki = istenen || urun.secenekler.find(s => s.stok > 0);
     $('secenekler').innerHTML = urun.secenekler.map(s => `
       <label class="secenek ${s.stok === 0 ? 'pasif' : ''}">
         <input type="radio" name="secenek" value="${s.id}" ${s === ilkStoktaki ? 'checked' : ''} ${s.stok === 0 ? 'disabled' : ''}>
         <span class="secenek__tik">${ikon('tik')}</span>
         <span class="secenek__ad">${esc(s.ad)}</span>
         <span class="secenek__fiyat">${tlKisa(s.fiyatKurus)}</span>
-        ${s.stok === 0 ? '<span class="secenek__stok">Tükendi</span>' : (s.stok <= 3 ? `<span class="secenek__stok">Son ${s.stok} adet</span>` : '')}
+        ${s.stok === 0 ? '<span class="secenek__stok">Kontenjan dolu</span>' : (s.stok <= 3 ? `<span class="secenek__stok">Son ${s.stok} kontenjan</span>` : '')}
       </label>`).join('');
 
     // Bakım bilgileri
@@ -165,7 +167,7 @@
     location.href = '/odeme.html';
   });
 
-  $('yEkle').addEventListener('click', () => $('sepetForm').requestSubmit());
+  $('yEkle').addEventListener('click', () => $('hemenAl').click());
 
   // Bildirimdeki "Sepete git" mini sepeti açsın
   document.addEventListener('click', (e) => {
@@ -174,7 +176,7 @@
     Site.cekmeceAc();
   });
 
-  // Mobilde "Sepete ekle" butonu ekrandan çıkınca altta yapışkan çubuk görünür
+  // Mobilde "Hemen başla" butonu ekrandan çıkınca altta yapışkan çubuk görünür
   function yapiskanKur() {
     if (!('IntersectionObserver' in window)) return;
     const cubuk = $('yapiskan');
@@ -183,7 +185,7 @@
       cubuk.classList.toggle('gorun', goster);
       cubuk.setAttribute('aria-hidden', String(!goster));
       $('yEkle').tabIndex = goster ? 0 : -1;
-    }).observe($('ekleBtn'));
+    }).observe($('hemenAl'));
   }
 
   async function benzerleriGoster() {
@@ -197,12 +199,11 @@
     } catch { /* önemsiz */ }
   }
 
-  isletmeAl().then((i) => { if (dolu(i.kargoyaVerilmeSuresi)) $('kargoBilgi').textContent = i.kargoyaVerilmeSuresi; });
 
   const slug = parametre('u');
   if (!slug) {
     $('durum').className = 'hata-kutu';
-    $('durum').innerHTML = `${ikon('uyari')}<span>Ürün bulunamadı. <a href="/paketler.html">Tüm paketler</a></span>`;
+    $('durum').innerHTML = `${ikon('uyari')}<span>Paket bulunamadı. <a href="/paketler.html">Tüm paketler</a></span>`;
   } else {
     api(`/api/urunler/${encodeURIComponent(slug)}`)
       .then((veri) => { urun = veri; ciz(); })

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Xsportgym | Antakya Spor Salonu ve Fitness Merkezi</title>
-  <meta name="description" content="Xsportgym: Antakya Güzelburç'ta spor salonu ve fitness merkezi. Kişiye özel program, birebir personal training. Hafta içi 07.00 – 22.30, cumartesi 08.00 – 21.00.">
-  <meta name="theme-color" content="#0b0d14">
+  <meta name="description" content="Xsportgym: Antakya Güzelburç'ta spor salonu ve online koçluk. Kişiye özel antrenman ve beslenme programı, birebir takip.">
+  <meta name="theme-color" content="#f2efe9">
   <meta property="og:title" content="Xsportgym | Antakya Spor Salonu">
   <meta property="og:description" content="Kişiye özel program, birebir personal training. Güzelburç, Antakya.">
   <meta property="og:image" content="/img/logo-instagram.jpg">
@@ -21,13 +21,13 @@
     <section class="kahraman kahraman--ana" aria-labelledby="kahramanBaslik">
       <div class="kahraman__kart">
         <div class="kahraman__arka"><div class="gorsel-yeri" data-yer="kahraman" data-oncelik data-alt="Xsportgym salonu"></div></div>
-        <img class="kahraman__x" src="/img/logo-x.svg" alt="" aria-hidden="true">
+        <span class="kahraman__dev" aria-hidden="true"><b>X</b>SPORT</span>
         <div class="kahraman__ic">
           <p class="ust-baslik kahraman__ust">Antakya · Güzelburç</p>
-          <h1 id="kahramanBaslik"><span>Güçlü bir başlangıç için</span> <span class="vurgu-yazi">Xsportgym</span> <span class="hafif">kişiye özel program ve birebir antrenörle</span></h1>
+          <h1 id="kahramanBaslik"><span>Güçlü bir başlangıç için</span> <span class="vurgu-yazi">Xsportgym</span> <span class="hafif">salonda ya da online, kişiye özel programla</span></h1>
           <div class="kahraman__satir">
-            <p class="kahraman__ozet">Seviyen ne olursa olsun, sana uygun programla başlıyoruz. Hafta içi sabah 07.00'den gece 22.30'a kadar açığız.</p>
-            <a class="btn sari buyuk" href="/paketler.html">Paketleri gör <i data-ikon="ok-capraz"></i></a>
+            <p class="kahraman__ozet">Antakya'daki salonumuzda ya da online koçlukla: nerede olursan ol, hedefine göre hazırlanan programla başlıyoruz.</p>
+            <a class="btn sari buyuk" href="#online-kocluk"><span><span lang="en">Online</span> koçluk</span> <i data-ikon="ok-capraz"></i></a>
           </div>
           <div class="sayilar kahraman__sayilar">
             <div class="sayi-kart" data-i="0"><strong>6 gün</strong><span>haftada açık</span></div>
@@ -35,9 +35,9 @@
             <div class="sayi-kart" data-i="2"><strong>1'e 1</strong><span>personal training</span></div>
           </div>
         </div>
-        <a class="yuzen-kart" href="#kampanyalar">
+        <a class="yuzen-kart" href="#online-kocluk">
           <div class="yuzen-kart__ust">
-            <div><strong>Personal training'de hediye ders</strong><p>8 ders alana +1, 12 ders alana +2, 24 ders alana +3 ders hediye.</p></div>
+            <div><strong><span lang="en">Online</span> koçluk</strong><p>Değişime benimle başla: 1, 3 ve 6 aylık kişiye özel antrenman ve beslenme programı.</p></div>
             <span class="daire-ok acik" aria-hidden="true"><i data-ikon="ok-capraz"></i></span>
           </div>
           <div class="gorsel-yeri" data-yer="kahramanKart"></div>
@@ -81,7 +81,7 @@
       <div class="kampanya-izgara" data-reveal-grup>
         <article class="kampanya-kart" data-reveal>
           <div class="kampanya-kart__ust">
-            <span class="kampanya-etiket"><i data-ikon="hediye"></i> Personal training</span>
+            <span class="kampanya-etiket"><i data-ikon="hediye"></i> <span lang="en">Personal training</span></span>
             <h3>Birebir antrenmanda hediye ders</h3>
             <p>Antrenörünle birebir çalış, paketine göre ek dersler bizden.</p>
           </div>
@@ -104,14 +104,22 @@
       </div>
     </section>
 
-    <!-- 5. PAKETLER -->
-    <section class="kap bolum" id="paketler" aria-labelledby="paketBaslik">
+    <!-- 5. ONLINE KOÇLUK: fiyat kartları paketlerden otomatik oluşur (anasayfa.js) -->
+    <section class="kap bolum" id="online-kocluk" aria-labelledby="paketBaslik">
       <header class="bolum-basi">
-        <p class="ust-baslik">Paketler</p>
-        <h2 id="paketBaslik" data-reveal>Üyelik ve<br>personal training paketleri</h2>
+        <p class="ust-baslik"><span lang="en">Online</span> koçluk</p>
+        <div data-reveal>
+          <h2 id="paketBaslik">Değişime<br>benimle başla</h2>
+          <p>Selen Mışraklı'nın hazırladığı kişiye özel antrenman ve beslenme programı, düzenli takiple. Nerede olursan ol.</p>
+        </div>
       </header>
-      <div class="urun-izgara" id="urunler"></div>
-      <div class="bolum-alt"><a class="btn" href="/paketler.html">Tüm paketler <i data-ikon="ok-capraz"></i></a></div>
+      <div class="fiyat-izgara" id="urunler"></div>
+      <ol class="adim-sira" data-reveal-grup aria-label="Online koçluk nasıl işler">
+        <li data-reveal><b>01</b><strong>Paketini seç</strong><span>Sana uygun süreyi seç, ödemeni iyzico güvencesiyle yap.</span></li>
+        <li data-reveal><b>02</b><strong>Tanışalım</strong><span>Seninle iletişime geçip hedefini, seviyeni ve zamanını konuşuruz.</span></li>
+        <li data-reveal><b>03</b><strong>Programın hazır</strong><span>Antrenman ve beslenme planın sana özel hazırlanıp iletilir.</span></li>
+        <li data-reveal><b>04</b><strong>Birlikte ilerleyelim</strong><span>Düzenli kontrol, gerektiğinde program güncellemesi.</span></li>
+      </ol>
     </section>
 
     <!-- 6. GENİŞ GÖRSEL BANDI -->
@@ -206,8 +214,16 @@
           <div class="akordeon__icerik">Rahat spor kıyafeti, salonda giymek için temiz bir spor ayakkabısı, havlu ve su şişesi yeterli.</div>
         </details>
         <details>
-          <summary>Üyeliğimi internetten alabilir miyim?<span class="arti" aria-hidden="true"></span></summary>
-          <div class="akordeon__icerik">Evet. <a href="/paketler.html">Paketler</a> sayfasından paketini seçip iyzico güvencesiyle kartla ödeyebilirsin. Kart bilgilerin bu siteye hiç gelmez ve saklanmaz.</div>
+          <summary>Online koçluk nasıl işliyor?<span class="arti" aria-hidden="true"></span></summary>
+          <div class="akordeon__icerik"><a href="#online-kocluk">Paketini seçip</a> ödemeni yaparsın. Seninle iletişime geçip hedefini konuşuruz, kişiye özel antrenman ve beslenme programını hazırlayıp sana iletiriz. Paket süresi boyunca ilerlemeni takip ederiz.</div>
+        </details>
+        <details>
+          <summary>Online koçluk için Antakya'da olmam gerekiyor mu?<span class="arti" aria-hidden="true"></span></summary>
+          <div class="akordeon__icerik">Hayır. Programını bulunduğun yerde, kendi salonunda ya da evde uygulayabilirsin; programın buna göre hazırlanır.</div>
+        </details>
+        <details>
+          <summary>Ödeme güvenli mi?<span class="arti" aria-hidden="true"></span></summary>
+          <div class="akordeon__icerik">Ödemeler iyzico'nun güvenli ödeme sayfasında, bankanın 3D Secure doğrulamasıyla alınır. Kart bilgilerin bu siteye hiç gelmez ve saklanmaz.</div>
         </details>
       </div>
     </section>

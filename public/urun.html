@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Paket | Xsportgym</title>
-  <meta name="theme-color" content="#0b0d14">
+  <meta name="theme-color" content="#f2efe9">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <script src="/js/bas.js"></script>
@@ -30,30 +30,30 @@
           <p class="ust-baslik" id="kategori"></p>
           <h1 id="ad"></h1>
           <p class="latin gizli" id="latin"></p>
-          <div class="fiyat-buyuk"><span id="fiyat"></span><small>Kargo ücretsiz</small></div>
+          <div class="fiyat-buyuk"><span id="fiyat"></span><small>Online · her yerden</small></div>
           <p class="urun-ozet gizli" id="ozet"></p>
 
           <hr class="ayrac">
           <form id="sepetForm">
             <fieldset>
-              <legend class="secenek-baslik"><span>Seçenek</span><span id="secenekBilgi"></span></legend>
+              <legend class="secenek-baslik"><span>Süre seç</span><span id="secenekBilgi"></span></legend>
               <div class="secenekler" id="secenekler"></div>
             </fieldset>
             <div class="satin-al">
-              <div class="adet-kutu" role="group" aria-label="Adet">
+              <div class="adet-kutu gizli" role="group" aria-label="Adet"><!-- koçluk paketinden bir tane alınır -->
                 <button type="button" data-adet="-1" aria-label="Azalt"><i data-ikon="eksi"></i></button>
                 <input type="number" id="adet" min="1" max="10" value="1" inputmode="numeric" aria-label="Adet">
                 <button type="button" data-adet="1" aria-label="Artır"><i data-ikon="arti"></i></button>
               </div>
-              <button type="submit" class="btn buyuk" id="ekleBtn">Sepete ekle</button>
+              <button type="button" class="btn sari buyuk tam" id="hemenAl">Hemen başla <i data-ikon="ok-capraz"></i></button>
             </div>
-            <button type="button" class="btn ikincil tam buyuk hemen-al" id="hemenAl">Hemen satın al <i data-ikon="ok-capraz"></i></button>
+            <button type="submit" class="btn ikincil tam buyuk hemen-al" id="ekleBtn">Sepete ekle</button>
           </form>
 
           <ul class="guvence">
-            <li><i data-ikon="kargo"></i><span><strong>Ücretsiz kargo.</strong> <span id="kargoBilgi">Aras Kargo ile gönderilir.</span></span></li>
-            <li><i data-ikon="kalkan"></i><span><strong>Güvenli ödeme.</strong> Kart bilgileriniz bu sitede saklanmaz.</span></li>
-            <li><i data-ikon="iade"></i><span><strong>14 gün cayma hakkı.</strong> <a href="/sayfa/iptal-ve-iade-kosullari">Koşullar</a></span></li>
+            <li><i data-ikon="whatsapp"></i><span><strong>Birebir iletişim.</strong> Ödemeden sonra seninle iletişime geçiyoruz.</span></li>
+            <li><i data-ikon="kalkan"></i><span><strong>Güvenli ödeme.</strong> Kart bilgilerin bu sitede saklanmaz.</span></li>
+            <li><i data-ikon="iade"></i><span><strong>İptal ve iade.</strong> <a href="/sayfa/iptal-ve-iade-kosullari">Koşulları oku</a></span></li>
           </ul>
         </div>
       </div>
@@ -61,8 +61,8 @@
 
     <section class="kap bolum gizli" id="bakimBolum" aria-labelledby="bakimBaslik">
       <header class="bolum-basi">
-        <p class="ust-baslik">Dikim ve bakım</p>
-        <div data-reveal><h2 id="bakimBaslik">Bu fidanı <em>tanıyın</em></h2><p>Fidanınızın ihtiyaçlarını bilmek, ilk yıl tutmasının en önemli adımı.</p></div>
+        <p class="ust-baslik">Paket içeriği</p>
+        <div data-reveal><h2 id="bakimBaslik">Bu pakette <em>neler var?</em></h2><p>Programın, takibin ve iletişimin nasıl ilerleyeceği.</p></div>
       </header>
       <div class="bakim-izgara" id="bakim" data-reveal></div>
     </section>
@@ -75,13 +75,13 @@
           <div class="aciklama" id="aciklama"></div>
         </div>
         <aside class="dikim-adimlari" data-reveal>
-          <h3>Dikim adımları</h3>
-          <p class="kucuk">Fidanınızı teslim aldığınızda:</p>
+          <h3>Nasıl işler?</h3>
+          <p class="kucuk">Ödemeden sonra:</p>
           <ol>
-            <li><span><strong>Kökleri ıslatın</strong>Birkaç saat suda bekletin.</span></li>
-            <li><span><strong>Çukuru açın</strong>Yaklaşık 60×60 cm, güneş alan bir yere.</span></li>
-            <li><span><strong>Aşı noktası yukarıda</strong>Toprağın üstünde kalsın.</span></li>
-            <li><span><strong>Can suyu verin</strong>Toprağı bastırıp bolca sulayın.</span></li>
+            <li><span><strong>Seninle iletişime geçeriz</strong>Hedefini, seviyeni ve programına ayırabileceğin zamanı konuşuruz.</span></li>
+            <li><span><strong>Programın hazırlanır</strong>Antrenman ve beslenme planın sana özel hazırlanır.</span></li>
+            <li><span><strong>Başlarsın</strong>Salonda ya da evde, telefonundan takip edersin.</span></li>
+            <li><span><strong>Düzenli kontrol</strong>İlerlemene göre programın güncellenir.</span></li>
           </ol>
           <p class="kucuk"><a class="ok-link" href="/#iletisim">Bize sorun <i data-ikon="ok-capraz"></i></a></p>
         </aside>
@@ -91,7 +91,7 @@
     <section class="kap bolum gizli" id="benzerBolum" aria-labelledby="benzerBaslik">
       <header class="bolum-basi">
         <p class="ust-baslik">Xsportgym</p>
-        <h2 id="benzerBaslik" data-reveal>Bunlara da<br>göz at</h2>
+        <h2 id="benzerBaslik" data-reveal>Diğer<br>paketler</h2>
         <a class="ok-link bolum-basi__sag" href="/paketler.html">Tüm paketler <i data-ikon="ok-capraz"></i></a>
       </header>
       <div class="urun-izgara" id="benzerler"></div>
@@ -100,7 +100,7 @@
 
   <div class="yapiskan-sepet" id="yapiskan" aria-hidden="true">
     <div class="yapiskan-sepet__metin"><strong id="yAd"></strong><span id="yFiyat"></span></div>
-    <button type="button" class="btn" id="yEkle" tabindex="-1">Sepete ekle</button>
+    <button type="button" class="btn" id="yEkle" tabindex="-1">Hemen başla</button>
   </div>
 
   <footer id="alt"></footer>

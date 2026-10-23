@@ -18,6 +18,11 @@ const Site = (() => {
   };
 
   const parametre = ad => new URLSearchParams(location.search).get(ad);
+
+  // Büyük harfe çevrilen başlıklarda İngilizce kelimeler Türkçe kurala göre "ONLİNE" olmasın diye
+  // lang="en" ile işaretlenir. Girdi düz metindir, çıktı güvenli HTML'dir.
+  const INGILIZCE = /\b(online|coaching|personal|training|fitness)\b/gi;
+  const adHtml = metin => esc(metin).replace(INGILIZCE, k => `<span lang="en">${k}</span>`);
   const gorselUrl = id => `/api/gorsel/${encodeURIComponent(id)}`;
   // İşletme bilgisinde henüz doldurulmamış alanları gösterme
   const dolu = deger => Boolean(deger) && !String(deger).startsWith('DOLDURULACAK');
@@ -130,25 +135,52 @@ const Site = (() => {
     return urunSozu;
   }
 
+  // Fiyat kartları için: her paketin süre seçeneklerini tek listede toplar.
+  // "3 aylık" gibi adlardan ay sayısı çıkarılır; aylık maliyeti en düşük çok aylık seçenek "En avantajlı" işaretlenir.
+  let seceneklerSozu = null;
+  function paketSecenekleriAl() {
+    if (!seceneklerSozu) {
+      seceneklerSozu = urunleriAl()
+        .then(urunler => Promise.all(urunler.map(u => api(`/api/urunler/${encodeURIComponent(u.slug)}`))))
+        .then((detaylar) => {
+          const liste = [];
+          for (const u of detaylar) {
+            for (const s of u.secenekler) {
+              const ay = Number((/(\d+)\s*ay/i.exec(s.ad) || [])[1]) || null;
+              // Aylık tutar tam liraya yuvarlanır (ör. 4.000 TL / 3 ay = ayda 1.333 TL)
+              liste.push({ urun: u, secenek: s, ay, aylikKurus: ay ? Math.round(s.fiyatKurus / ay / 100) * 100 : null });
+            }
+          }
+          const cokAylik = liste.filter(x => x.ay > 1 && x.secenek.stok > 0);
+          const tekAy = liste.find(x => x.ay === 1);
+          if (cokAylik.length) {
+            const enIyi = cokAylik.reduce((a, b) => (b.aylikKurus < a.aylikKurus ? b : a));
+            if (!tekAy || enIyi.aylikKurus < tekAy.aylikKurus) enIyi.avantajli = true;
+          }
+          return liste;
+        })
+        .catch((hata) => { seceneklerSozu = null; throw hata; });
+    }
+    return seceneklerSozu;
+  }
+
   let isletmeSozu = null;
   function isletmeAl() {
     if (!isletmeSozu) isletmeSozu = api('/api/isletme').catch(() => ({ marka: 'Xsportgym' }));
     return isletmeSozu;
   }
 
-  // ---------- Ürün kartı (ana sayfa, katalog, benzer ürünler) ----------
+  // ---------- Paket kartı (ana sayfa, paketler, diğer paketler) ----------
   function cerceve(gorselId, alt, { yukle = 'lazy' } = {}) {
     return `<span class="cerceve"><span class="cerceve__ic">${gorselId
       ? `<img src="${gorselUrl(gorselId)}" alt="${esc(alt)}" loading="${yukle}" decoding="async" data-yukleniyor>`
       : `<span class="cerceve__bos">${window.Ikon ? Ikon.cizim('dambil') : ''}<span>Fotoğraf yakında</span></span>`}</span></span>`;
   }
 
-  // Kartta gösterilecek kısa bilgi: hasat, ilk ürün ya da dikim zamanı
+  // Kartta gösterilecek kısa bilgi: paketin süresi ya da başlangıcı
   function kartBilgisi(u) {
     const b = u.bakim || {};
-    if (b.hasat) return ['Hasat', b.hasat];
-    if (b.meyve) return ['İlk ürün', b.meyve];
-    if (b.dikim) return ['Dikim', b.dikim];
+    if (b.sure) return ['Süre', b.sure];
     return null;
   }
 
@@ -254,7 +286,7 @@ const Site = (() => {
   // ---------- Üst menü ----------
   const MENU = [
     ['/', 'Ana sayfa'],
-    ['/paketler.html', 'Paketler'],
+    ['/paketler.html', '<span><span lang="en">Online</span> koçluk</span>'],
     ['/hakkimizda.html', 'Hakkımızda'],
     ['/#kampanyalar', 'Kampanyalar'],
     ['/#iletisim', 'İletişim']
@@ -286,7 +318,7 @@ const Site = (() => {
             <a class="ikon-btn" href="https://www.instagram.com/xsportgymm/" target="_blank" rel="noopener" aria-label="Instagram'da Xsportgym">${ikon('instagram')}</a>
             <a class="ikon-btn" href="/giris.html" data-hesap-link aria-label="Giriş yap">${ikon('hesap')}</a>
             <a class="ikon-btn sepet-btn" href="/sepet.html" data-sepet-ac aria-label="Sepetim">${ikon('sepet')}<span class="sepet-sayi gizli" data-sepet-sayi>0</span></a>
-            <a class="btn" href="/paketler.html">Üye ol</a>
+            <a class="btn" href="/#online-kocluk">Hemen başla</a>
             <button class="ikon-btn menu-btn" type="button" aria-label="Menüyü aç" aria-expanded="false" aria-controls="mobilMenu">${ikon('menu')}</button>
           </div>
         </div>
@@ -294,7 +326,7 @@ const Site = (() => {
       <nav class="mobil-menu" id="mobilMenu" aria-label="Mobil menü">
         ${MENU.map(([href, ad], i) => `<a href="${href}" data-i="${i}" ${secili(href) ? 'aria-current="page"' : ''}>${ad}</a>`).join('')}
         <a href="/sepet.html" data-i="5">Sepetim</a>
-        <div class="mobil-menu__alt"><a class="btn sari buyuk" href="/paketler.html">Paketleri gör ${ikon('ok-capraz')}</a></div>
+        <div class="mobil-menu__alt"><a class="btn sari buyuk" href="/#online-kocluk"><span><span lang="en">Online</span> koçluk</span> ${ikon('ok-capraz')}</a></div>
       </nav>`;
     degiskenleriUygula(ust);
     rozetiGuncelle();
@@ -327,7 +359,7 @@ const Site = (() => {
           const turler = new Map();
           urunler.forEach(u => turler.set(u.kategori, (turler.get(u.kategori) || 0) + 1));
           panel.innerHTML = `<a class="tumu" href="/paketler.html">Tüm paketler<sup>${urunler.length}</sup></a>`
-            + [...turler.entries()].map(([ad, adet]) => `<a href="/paketler.html?kategori=${encodeURIComponent(ad)}">${esc(ad)}<sup>${adet}</sup></a>`).join('');
+            + [...turler.entries()].map(([ad, adet]) => `<a href="/paketler.html?kategori=${encodeURIComponent(ad)}">${adHtml(ad)}<sup>${adet}</sup></a>`).join('');
         }).catch(() => { yuklendi = false; panel.innerHTML = '<a href="/paketler.html">Tüm paketler</a>'; });
       };
       acilir.addEventListener('pointerenter', doldur);
@@ -387,17 +419,17 @@ const Site = (() => {
         <div class="alt__cta">
           <p class="ust-baslik">Xsportgym</p>
           <h2>Bugün başla, <em>daha güçlü</em> ol.</h2>
-          <a class="btn sari buyuk" href="/paketler.html">Paketleri gör ${ikon('ok-capraz')}</a>
+          <a class="btn sari buyuk" href="/#online-kocluk">Hemen başla ${ikon('ok-capraz')}</a>
         </div>
         <div class="alt__izgara">
           <div>
             <a class="logo" href="/">${logoHtml()}</a>
-            <p>Antakya Güzelburç'ta spor salonu ve fitness merkezi. Kişiye özel program, birebir personal training.</p>
+            <p>Antakya Güzelburç'ta spor salonu ve online koçluk. Kişiye özel antrenman ve beslenme programı.</p>
           </div>
           <div>
             <h4>Salon</h4>
             <ul>
-              <li><a href="/paketler.html">Üyelik paketleri</a></li>
+              <li><a href="/paketler.html">Online koçluk paketleri</a></li>
               <li><a href="/#kampanyalar">Kampanyalar</a></li>
               <li><a href="/hakkimizda.html">Hakkımızda</a></li>
               <li><a href="/link">Tüm linkler</a></li>
@@ -410,6 +442,7 @@ const Site = (() => {
               <li><a href="/sayfa/kvkk-aydinlatma-metni">KVKK aydınlatma metni</a></li>
               <li><a href="/sayfa/gizlilik-ve-cerez-politikasi">Gizlilik ve çerezler</a></li>
               <li><a href="/sayfa/iptal-ve-iade-kosullari">İptal ve iade</a></li>
+              <li><a href="/sayfa/hizmet-kosullari">Hizmet koşulları</a></li>
               <li><a href="/sayfa/mesafeli-satis-sozlesmesi">Mesafeli satış sözleşmesi</a></li>
             </ul>
           </div>
@@ -472,7 +505,7 @@ const Site = (() => {
     const sepet = sepetOku();
     cekmece.querySelector('[data-cekmece-sayi]').textContent = sepet.length ? sepetAdedi() : '';
     if (!sepet.length) {
-      govde.innerHTML = `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Sepetiniz boş</h3><p>Size uygun üyelik ya da personal training paketini seçin.</p></div>`;
+      govde.innerHTML = `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Sepetin boş</h3><p>Hedefine uygun online koçluk paketini seç.</p></div>`;
       alt.innerHTML = `<a class="btn tam" href="/paketler.html">Paketlere göz at ${ikon('ok-capraz')}</a>`;
       return;
     }
@@ -484,12 +517,12 @@ const Site = (() => {
       yerlestir(govde, v.kalemler.map((k, i) => `
         <div class="cekmece__satir" data-i="${i}">
           <a href="/urun.html?u=${encodeURIComponent(k.slug)}">${cerceve(k.gorselId, k.urunAdi)}</a>
-          <div><strong>${esc(k.urunAdi)}</strong><span>${esc(k.secenekAdi)} · ${k.adet} × ${tlKisa(k.birimFiyatKurus)}</span></div>
-          <button class="ikon-btn sil" type="button" data-cekmece-sil="${k.secenekId}" aria-label="${esc(k.urunAdi)} ürününü sepetten çıkar">${ikon('cop')}</button>
+          <div><strong>${esc(k.urunAdi)}</strong><span>${esc(k.secenekAdi)} · ${tlKisa(k.birimFiyatKurus * k.adet)}</span></div>
+          <button class="ikon-btn sil" type="button" data-cekmece-sil="${k.secenekId}" aria-label="${esc(k.urunAdi)} paketini sepetten çıkar">${ikon('cop')}</button>
         </div>`).join(''));
       alt.innerHTML = `
         ${v.sorunlar.length ? `<div class="uyari-kutu">${ikon('uyari')}<span>${esc(v.sorunlar[0].mesaj)}</span></div>` : ''}
-        <div class="cekmece__kargo">${ikon('kargo')} Kargo ücretsiz, tüm Türkiye'ye</div>
+        <div class="cekmece__kargo">${ikon('whatsapp')} Ödemeden sonra seninle iletişime geçiyoruz</div>
         <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span>${tl(v.toplamKurus)}</span></div>
         <a class="btn tam buyuk ${v.sorunlar.length ? 'gizli' : ''}" href="/odeme.html">Ödemeye geç ${ikon('ok-capraz')}</a>
         <a class="btn ikincil tam" href="/sepet.html">Sepeti düzenle</a>`;
@@ -570,7 +603,7 @@ const Site = (() => {
   window.addEventListener('storage', (e) => { if (e.key === SEPET_ANAHTARI) rozetiGuncelle(); });
 
   return {
-    esc, tl, tlKisa, api, whatsappLink, saatSatirlari, parametre, gorselUrl, bildir, isletmeAl, benAl, urunleriAl, dolu, ikon, azHareket,
+    esc, adHtml, tl, tlKisa, api, whatsappLink, saatSatirlari, parametre, gorselUrl, bildir, isletmeAl, benAl, urunleriAl, paketSecenekleriAl, dolu, ikon, azHareket,
     sepetOku, sepetYaz, sepeteEkle, sepetAdetAyarla, sepettenCikar, sepetiBosalt, sepetAdedi,
     cerceve, urunKarti, iskeletKartlari, yerlestir, hazirla, gozle, kaydirinca, cekmeceAc, cekmeceKapat, sepeteUcur
   };

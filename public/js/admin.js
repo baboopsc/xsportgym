@@ -10,15 +10,15 @@
   const ikon = ad => Ikon.svg(ad);
   const tamam = metin => `<span class="tamam">${ikon('tik-daire')} ${esc(metin)}</span>`;
 
-  // Ürün sayfasındaki "Dikim ve bakım" alanları: [anahtar, ikon, başlık, örnek]
+  // Paket sayfasındaki "Paket içeriği" alanları: [anahtar, ikon, başlık, örnek]
   const BAKIM = [
-    ['dikim', 'takvim', 'Dikim zamanı', 'Kasım – Mart'], ['gunes', 'gunes', 'Güneş', 'Tam güneş'],
-    ['sulama', 'damla', 'Sulama', 'Haftada bir, derin sulama'], ['toprak', 'toprak', 'Toprak', 'Süzek, tınlı toprak'],
-    ['meyve', 'agac', 'Meyve verme', 'Dikimden 2–3 yıl sonra'], ['hasat', 'elma', 'Hasat', 'Haziran – Temmuz'],
-    ['soguk', 'kar', 'Soğuğa dayanıklılık', "-25 °C'ye kadar"], ['boy', 'boy', 'Ağaç boyu', '4–6 m'],
-    ['tozlasma', 'cicek', 'Tozlaşma', 'Kendine verimli']
+    ['sure', 'takvim', 'Süre', '4 hafta'], ['program', 'dambil', 'Antrenman programı', 'Haftalık, kişiye özel'],
+    ['beslenme', 'elma', 'Beslenme planı', 'Hedefe göre hazırlanır'], ['takip', 'grafik', 'Takip', 'Haftalık kontrol'],
+    ['iletisim', 'whatsapp', 'İletişim', 'WhatsApp üzerinden'], ['guncelleme', 'yenile', 'Program güncelleme', 'Her 2 haftada bir'],
+    ['seviye', 'yildiz', 'Seviye', 'Başlangıç ve orta'], ['yer', 'konum', 'Nerede uygulanır', 'Salonda veya evde'],
+    ['baslangic', 'yildirim', 'Başlangıç', 'Ödemeden sonra 24 saat içinde']
   ];
-  const BASLIKLAR = { siparisler: 'Siparişler', urunler: 'Ürünler', uyeler: 'Üyeler', hesap: 'Hesabım' };
+  const BASLIKLAR = { siparisler: 'Öğrenciler ve siparişler', urunler: 'Paketler', uyeler: 'Üyeler', hesap: 'Hesabım' };
 
   let DURUM_ADLARI = {};
   let GECISLER = {};
@@ -33,8 +33,8 @@
     'odeme-basarisiz': 'Ödeme başarısız',
     'odeme-sonucu-belirsiz': 'Ödeme sonucu alınamadı',
     'terk-edildi': 'Ödeme yarım kaldı',
-    'stok-yetersiz': 'Stok yetersizdi',
-    'stok-geri-eklendi': 'Stok geri eklendi',
+    'stok-yetersiz': 'Kontenjan yetersizdi',
+    'stok-geri-eklendi': 'Kontenjan geri eklendi',
     'durum-degisti': 'Durum değişti',
     'kargo-takip-no': 'Kargo takip no girildi',
     'admin-notu': 'Not güncellendi',
@@ -168,8 +168,8 @@
   // ---------- Siparişler ----------
 
   const FILTRELER = [
-    ['', 'Aktif siparişler'], ['odendi', 'Yeni'], ['inceleme', 'İncelemede'], ['hazirlaniyor', 'Hazırlanıyor'],
-    ['kargoda', 'Kargoda'], ['teslim-edildi', 'Teslim edildi'], ['iptal', 'İptal'], ['iade-edildi', 'İade edildi'],
+    ['', 'Aktif öğrenciler'], ['odendi', 'Yeni öğrenciler'], ['inceleme', 'İncelemede'], ['hazirlaniyor', 'Program hazırlanıyor'],
+    ['kargoda', 'Koçluk sürüyor'], ['teslim-edildi', 'Tamamlandı'], ['iptal', 'İptal'], ['iade-edildi', 'İade edildi'],
     ['odeme-bekliyor', 'Ödeme bekleyen'], ['terk-edildi', 'Yarım kalan ödemeler'], ['odeme-basarisiz', 'Başarısız ödemeler'],
     ['tum', 'Tüm siparişler']
   ];
@@ -185,7 +185,7 @@
     }).join('');
     $('filtre').value = secili;
 
-    const KARTLAR = [['odendi', 'Yeni sipariş', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'], ['hazirlaniyor', 'Hazırlanıyor', 'paket'], ['kargoda', 'Kargoda', 'kargo']];
+    const KARTLAR = [['odendi', 'Yeni öğrenci', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'], ['hazirlaniyor', 'Program hazırlanıyor', 'not'], ['kargoda', 'Koçluk sürüyor', 'dambil']];
     $('ozetKartlari').innerHTML = KARTLAR.map(([d, ad, ik]) => `
       <button type="button" class="ozet-karti ${d} ${secili === d ? 'secili' : ''} ${(sayilar[d] || 0) > 0 ? 'dolu' : ''}" data-filtre="${d}">
         <span class="ozet-karti__ikon">${ikon(ik)}</span>
@@ -221,17 +221,16 @@
           <span>${ikon('eposta')}<a href="mailto:${esc(s.email)}">${esc(s.email)}</a></span>
           <span>${ikon('konum')}${esc(s.adres)}, ${esc(s.ilce)} / ${esc(s.sehir)} ${esc(s.posta_kodu)}</span>
         </div>
-        ${s.musteri_notu ? `<p class="uyari bilgi">${ikon('mesaj')}<span><strong>Müşteri notu:</strong> ${esc(s.musteri_notu)}</span></p>` : ''}
-        ${s.stok_uyarisi ? `<p class="uyari hata">${ikon('uyari')}<span>Bu siparişte stok yetersizdi. Ürün yoksa müşteriyi arayın veya iptal edin.</span></p>` : ''}
-        ${s.durum === 'inceleme' ? `<p class="uyari hata">${ikon('uyari')}<span>Ödeme incelemede. Ayrıntılara bakın ve kargolamadan önce iyzico panelinden kontrol edin.</span></p>` : ''}
+        ${s.musteri_notu ? `<p class="uyari bilgi">${ikon('mesaj')}<span><strong>Hedefi:</strong> ${esc(s.musteri_notu)}</span></p>` : ''}
+        ${s.stok_uyarisi ? `<p class="uyari hata">${ikon('uyari')}<span>Bu pakette kontenjan doluydu. Öğrenciyi arayın veya iptal edin.</span></p>` : ''}
+        ${s.durum === 'inceleme' ? `<p class="uyari hata">${ikon('uyari')}<span>Ödeme incelemede. Ayrıntılara bakın ve koçluğa başlamadan önce iyzico panelinden kontrol edin.</span></p>` : ''}
         <table class="kalem-tablo">
           ${s.kalemler.map(k => `
-            <tr><td>${esc(k.urun)} (${esc(k.secenek)})</td><td>${esc(k.adet)} adet</td>
+            <tr><td>${esc(k.urun)} (${esc(k.secenek)})</td><td>${k.adet > 1 ? `${esc(k.adet)} adet` : ''}</td>
             <td class="sag">${tl(k.birimFiyatKurus * k.adet)}</td></tr>`).join('')}
           <tr><td colspan="2"><strong>Toplam</strong>${s.taksit > 1 ? ` <span class="kucuk">(${esc(s.taksit)} taksit)</span>` : ''}</td>
             <td class="sag"><strong>${tl(s.toplam_kurus)}</strong></td></tr>
         </table>
-        ${s.kargo_takip_no ? `<div class="bilgi-cip">${ikon('kargo')} Aras takip no: <strong>${esc(s.kargo_takip_no)}</strong></div>` : ''}
         ${s.admin_notu ? `<div class="bilgi-cip">${ikon('not')} ${esc(s.admin_notu)}</div>` : ''}
         <div class="islem">
           ${sonrakiler.length ? `
@@ -239,9 +238,7 @@
               <option value="">— Durumu değiştirme —</option>
               ${sonrakiler.map(d => `<option value="${esc(d)}">${esc(DURUM_ADLARI[d])}</option>`).join('')}
             </select>` : ''}
-          ${!odenmemis && s.durum !== 'iptal' && s.durum !== 'iade-edildi'
-            ? `<input class="takipNo" placeholder="Aras takip no" value="${esc(s.kargo_takip_no || '')}" maxlength="40" aria-label="Kargo takip no">` : ''}
-          ${sonrakiler.length || !odenmemis ? '<button class="ana kaydet">Kaydet</button>' : ''}
+          ${sonrakiler.length ? '<button class="ana kaydet">Kaydet</button>' : ''}
           ${odenmemis ? `<button class="odemeKontrol">${ikon('yenile')} Ödemeyi iyzico'dan kontrol et</button>` : ''}
           ${iadeEdilebilir ? `<button class="tehlike iadeEt">${ikon('iade')} ${s.durum === 'teslim-edildi' ? 'Parayı iade et' : 'İptal et ve parayı iade et'}</button>` : ''}
           <button class="ayrintiAc">Ayrıntılar ${ikon('asagi')}</button>
@@ -383,13 +380,12 @@
 
     if (hedef.classList.contains('kaydet')) {
       const durum = kart.querySelector('.yeniDurum')?.value || '';
-      const kargoTakipNo = kart.querySelector('.takipNo')?.value.trim() || '';
       mesaj.textContent = '';
-      if (!durum && !kargoTakipNo) { mesaj.textContent = 'Bir durum seçin veya takip numarası girin.'; return; }
+      if (!durum) { mesaj.textContent = 'Önce yeni durumu seçin.'; return; }
       if (durum === 'odendi' && !confirm('iyzico panelinden ödemeyi kontrol ettiniz ve sorun olmadığından emin misiniz?')) return;
       hedef.disabled = true;
       try {
-        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: durum || undefined, kargoTakipNo } });
+        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum } });
         filtreleriDoldur();
         siparisleriYukle();
       } catch (hata) {
@@ -404,10 +400,10 @@
   let araZamani = null;
   $('ara').addEventListener('input', () => { clearTimeout(araZamani); araZamani = setTimeout(siparisleriYukle, 400); });
 
-  // ---------- Ürünler ----------
+  // ---------- Paketler (veritabanında "urunler") ----------
 
   let urunler = [];
-  let duzenlenen = null; // düzenlenen ürünün id'si (yeni ürün için null)
+  let duzenlenen = null; // düzenlenen paketin id'si (yeni paket için null)
 
   async function urunleriYukle() {
     const liste = $('urunListesi');
@@ -421,12 +417,12 @@
             <strong>${esc(u.ad)}</strong>
             <span class="kucuk soluk">${esc(u.kategori)}${u.latinceAd ? ` · <em>${esc(u.latinceAd)}</em>` : ''} · sıra ${esc(u.sira)}</span>
             <span class="secenek-cipleri">${u.secenekler.length
-              ? u.secenekler.map(s => `<span class="${s.aktif ? '' : 'kapali'} ${s.stok === 0 ? 'bitti' : ''}">${esc(s.ad)} · ${tl(s.fiyatKurus)} · stok ${s.stok}</span>`).join('')
-              : '<span class="bitti">Seçenek yok, sitede görünmez</span>'}</span>
+              ? u.secenekler.map(s => `<span class="${s.aktif ? '' : 'kapali'} ${s.stok === 0 ? 'bitti' : ''}">${esc(s.ad)} · ${tl(s.fiyatKurus)} · kontenjan ${s.stok}</span>`).join('')
+              : '<span class="bitti">Süre seçeneği yok, sitede görünmez</span>'}</span>
           </div>
           <span class="rozet ${u.aktif ? 'teslim-edildi' : ''}">${u.aktif ? 'Satışta' : 'Gizli'}</span>
           <button type="button" data-duzenle="${u.id}">${ikon('duzenle')} Düzenle</button>
-        </div>`).join('') : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Henüz ürün yok</h3><p>"Yeni ürün" butonuyla ilk fidanınızı ekleyin.</p></div>`;
+        </div>`).join('') : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Henüz paket yok</h3><p>"Yeni paket" butonuyla ilk koçluk paketini ekleyin.</p></div>`;
     } catch (hata) {
       liste.innerHTML = `<p class="hata">${esc(hata.message)}</p>`;
     }
@@ -444,7 +440,8 @@
     const u = urunler.find(x => x.id === id) || null;
     $('urunlerSekmesi').classList.add('gizli');
     $('urunDuzenle').classList.remove('gizli');
-    $('urunBaslik').textContent = u ? u.ad : 'Yeni ürün';
+    // "Online" gibi İngilizce kelimeler büyük harfte "ONLİNE" olmasın
+    $('urunBaslik').innerHTML = u ? esc(u.ad).replace(/\b(online|coaching|personal|training|fitness)\b/gi, k => `<span lang="en">${k}</span>`) : 'Yeni paket';
     $('uAd').value = u ? u.ad : '';
     $('uLatince').value = u ? (u.latinceAd || '') : '';
     for (const [anahtar] of BAKIM) $(`b-${anahtar}`).value = u && u.bakim ? (u.bakim[anahtar] || '') : '';
@@ -452,7 +449,7 @@
     $('uAciklama').value = u ? u.aciklama : '';
     $('uSira').value = u ? u.sira : String(urunler.length);
     $('uAktif').checked = u ? u.aktif : false;
-    $('urunMesaj').textContent = u ? '' : 'Önce ürünü kaydedin, sonra seçenek ve fotoğraf ekleyin.';
+    $('urunMesaj').textContent = u ? '' : 'Önce paketi kaydedin, sonra süre seçenekleri ve fotoğraf ekleyin.';
     $('urunEkler').classList.toggle('gizli', !u);
     $('secenekHata').textContent = '';
     $('gorselMesaj').textContent = '';
@@ -500,9 +497,9 @@
         $('urunEkler').classList.remove('gizli');
       }
       await duzenleneniTazele();
-      $('urunBaslik').textContent = govde.ad;
+      $('urunBaslik').innerHTML = esc(govde.ad).replace(/\b(online|coaching|personal|training|fitness)\b/gi, k => `<span lang="en">${k}</span>`);
       $('urunMesaj').innerHTML = tamam('Kaydedildi');
-      if (govde.aktif && !$('uAktif').checked) $('urunMesaj').innerHTML = tamam('Kaydedildi. Sitede görünmesi için en az bir seçenek ekleyip tekrar kaydedin.');
+      if (govde.aktif && !$('uAktif').checked) $('urunMesaj').innerHTML = tamam('Kaydedildi. Sitede görünmesi için en az bir süre seçeneği ekleyip tekrar kaydedin.');
     } catch (hata) {
       $('urunMesaj').textContent = hata.message;
     } finally {
@@ -525,9 +522,9 @@
   function secenekleriCiz(u) {
     const satir = (s) => `
       <tr data-secenek="${s ? s.id : 'yeni'}">
-        <td><input class="sAd" value="${s ? esc(s.ad) : ''}" placeholder="ör. 2 yaşlı" maxlength="60" aria-label="Seçenek adı"></td>
+        <td><input class="sAd" value="${s ? esc(s.ad) : ''}" placeholder="ör. 3 aylık" maxlength="60" aria-label="Seçenek adı"></td>
         <td><input class="sFiyat" value="${s ? tlYaz(s.fiyatKurus) : ''}" placeholder="750" inputmode="decimal" aria-label="Fiyat"></td>
-        <td><input class="sStok" type="number" min="0" value="${s ? s.stok : ''}" placeholder="0" aria-label="Stok"></td>
+        <td><input class="sStok" type="number" min="0" value="${s ? s.stok : ''}" placeholder="0" aria-label="Kontenjan"></td>
         <td><input class="sAktif" type="checkbox" ${!s || s.aktif ? 'checked' : ''} aria-label="Satışta"></td>
         <td>${s
           ? `<button type="button" class="sKaydet">Kaydet</button> <button type="button" class="sSil tehlike ikon-yalniz" aria-label="Sil" title="Sil">${ikon('cop')}</button>`

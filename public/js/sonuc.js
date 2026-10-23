@@ -57,19 +57,18 @@
         sessionStorage.setItem(`kutlandi-${s.siparisNo}`, '1');
       } catch { /* önemsiz */ }
       goster(`
-        <p class="ust-baslik">Siparişiniz alındı</p>
-        <h1 class="dev-baslik">Teşekkürler<em>.</em></h1>
-        <p>Seni salonda görmek için sabırsızlanıyoruz. Sipariş özetiniz ve sözleşmeleriniz e-posta adresinize gönderildi.</p>
-        ${s.durum === 'inceleme' ? `<div class="uyari-kutu">${ikon('saat')}<span>Ödemeniz kısa bir güvenlik kontrolünden geçiyor. Onaylanınca siparişiniz hazırlanacak.</span></div>` : ''}
+        <p class="ust-baslik">Ödemen alındı</p>
+        <h1 class="dev-baslik">Hoş geldin<em>!</em></h1>
+        <p>En kısa sürede seninle iletişime geçip hedefini konuşacağız ve programını hazırlayacağız. Sipariş özetin ve sözleşmelerin e-posta adresine gönderildi.</p>
+        ${s.durum === 'inceleme' ? `<div class="uyari-kutu">${ikon('saat')}<span>Ödemeniz kısa bir güvenlik kontrolünden geçiyor. Onaylanınca seninle iletişime geçeceğiz.</span></div>` : ''}
         <div class="siparis-no">Sipariş no <strong>#${esc(s.siparisNo)}</strong></div>
         <div class="ozet-kart sonuc-ozet">
-          ${s.kalemler.map(x => `<div class="ozet-satir"><span>${esc(x.urunAdi)} <span class="soluk">(${esc(x.secenekAdi)}) × ${x.adet}</span></span><span class="noktalar"></span><span>${tl(x.birimFiyatKurus * x.adet)}</span></div>`).join('')}
-          <div class="ozet-satir"><span>Kargo</span><span class="noktalar"></span><span class="ucretsiz">Ücretsiz</span></div>
+          ${s.kalemler.map(x => `<div class="ozet-satir"><span>${esc(x.urunAdi)} <span class="soluk">(${esc(x.secenekAdi)})</span></span><span class="noktalar"></span><span>${tl(x.birimFiyatKurus * x.adet)}</span></div>`).join('')}
           <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span>${tl(s.toplamKurus)}</span></div>
         </div>
         <div class="sonuc-butonlar">
-          <a class="btn buyuk" href="${takipLinki}">Siparişimi takip et ${ikon('ok-sag')}</a>
-          <a class="btn ikincil buyuk" href="/paketler.html">Alışverişe devam et</a>
+          <a class="btn buyuk" href="${takipLinki}">Siparişimi gör ${ikon('ok-sag')}</a>
+          <a class="btn ikincil buyuk" href="/">Ana sayfaya dön</a>
         </div>`);
       document.title = 'Teşekkürler | Xsportgym';
       if (ilkKez) yaprakYagdir();

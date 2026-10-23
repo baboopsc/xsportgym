@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Teslimat ve Ödeme | Xsportgym</title>
   <meta name="robots" content="noindex">
-  <meta name="theme-color" content="#0b0d14">
+  <meta name="theme-color" content="#f2efe9">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <script src="/js/bas.js"></script>
@@ -17,18 +17,18 @@
     <div class="kap">
       <ol class="odeme-adimlari" aria-label="Sipariş adımları">
         <li class="tamam"><span class="no"><i data-ikon="tik"></i></span><a href="/sepet.html">Sepet</a></li>
-        <li class="simdi"><span class="no">2</span>Teslimat</li>
+        <li class="simdi"><span class="no">2</span>Bilgilerin</li>
         <li><span class="no">3</span>Ödeme</li>
       </ol>
-      <h1>Teslimat ve <em>ödeme</em></h1>
+      <h1>Bilgilerin ve <em>ödeme</em></h1>
       <p id="yukleniyor" class="yukleniyor-yazi">Yükleniyor</p>
 
       <form class="iki-sutun gizli" id="form" novalidate>
         <div class="kart">
           <div class="form-bolum">
-            <h2><i data-ikon="konum"></i>Teslimat bilgileri</h2>
-            <div class="uye-kutu" id="uyeKutu"><i data-ikon="hesap"></i><span>Üye misiniz? <a href="/giris.html?r=%2Fodeme.html">Giriş yapın</a> veya
-              <a href="/giris.html?mod=kayit&r=%2Fodeme.html">üye olun</a>. Üye olmadan da devam edebilirsiniz.</span></div>
+            <h2><i data-ikon="hesap"></i>Seni tanıyalım</h2>
+            <div class="uye-kutu" id="uyeKutu"><i data-ikon="hesap"></i><span>Üye misin? <a href="/giris.html?r=%2Fodeme.html">Giriş yap</a> veya
+              <a href="/giris.html?mod=kayit&r=%2Fodeme.html">üye ol</a>. Üye olmadan da devam edebilirsin.</span></div>
             <div class="alan-satiri">
               <div><label for="ad">Ad</label><input id="ad" name="ad" autocomplete="given-name" maxlength="50" required></div>
               <div><label for="soyad">Soyad</label><input id="soyad" name="soyad" autocomplete="family-name" maxlength="50" required></div>
@@ -41,28 +41,29 @@
               <div><label for="il">İl</label><select id="il" name="il" required><option value="">Seçin</option></select></div>
               <div><label for="ilce">İlçe</label><input id="ilce" name="ilce" maxlength="50" required></div>
             </div>
-            <label for="adres">Açık adres</label>
-            <textarea id="adres" name="adres" rows="3" maxlength="300" autocomplete="street-address" placeholder="Mahalle, cadde/sokak, bina ve daire no" required></textarea>
+            <label for="adres">Fatura adresi</label>
+            <textarea id="adres" name="adres" rows="3" maxlength="300" autocomplete="street-address" placeholder="Mahalle, cadde/sokak, bina ve daire no (fatura için)" required></textarea>
             <div class="alan-satiri">
               <div><label for="postaKodu">Posta kodu <span class="soluk">(isteğe bağlı)</span></label><input id="postaKodu" name="postaKodu" inputmode="numeric" maxlength="5" autocomplete="postal-code"></div>
               <div></div>
             </div>
-            <label for="not">Sipariş notu <span class="soluk">(isteğe bağlı)</span></label>
-            <textarea id="not" name="not" rows="2" maxlength="500" placeholder="Örneğin: teslimat için uygun saatler"></textarea>
+            <label for="not">Hedefin <span class="soluk">(isteğe bağlı)</span></label>
+            <textarea id="not" name="not" rows="3" maxlength="500" placeholder="Örneğin: 8 kilo vermek istiyorum, haftada 3 gün antrenman yapabilirim, evde çalışacağım"></textarea>
             <label class="onay gizli" id="kaydetSatiri"><input type="checkbox" id="adresiKaydet" checked>
               <span>Bu bilgileri hesabıma kaydet</span></label>
-            <p class="soluk kucuk">Fatura, teslimat adresine düzenlenir. Kişisel verileriniz
+            <p class="soluk kucuk">Telefon numaranı seninle iletişime geçmek için kullanırız. Fatura bu adrese düzenlenir. Kişisel verilerin
               <a href="/sayfa/kvkk-aydinlatma-metni" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a> kapsamında işlenir.</p>
           </div>
 
           <div class="form-bolum">
             <h2><i data-ikon="belge"></i>Sözleşmeler</h2>
-            <p class="kucuk soluk">Aşağıdaki metinler sipariş bilgilerinizle doldurulmuştur. Lütfen okuyun.</p>
+            <p class="kucuk soluk">Aşağıdaki metinler bilgilerinle doldurulmuştur. Lütfen oku.</p>
             <div class="sozlesme-kutu" id="sozlesme" tabindex="0" aria-label="Ön bilgilendirme formu ve mesafeli satış sözleşmesi">Yükleniyor...</div>
             <label class="onay">
               <input type="checkbox" id="onay">
               <span><a href="/sayfa/on-bilgilendirme-formu" target="_blank" rel="noopener">Ön Bilgilendirme Formu</a>'nu ve
-              <a href="/sayfa/mesafeli-satis-sozlesmesi" target="_blank" rel="noopener">Mesafeli Satış Sözleşmesi</a>'ni okudum, onaylıyorum.</span>
+              <a href="/sayfa/mesafeli-satis-sozlesmesi" target="_blank" rel="noopener">Mesafeli Satış Sözleşmesi</a>'ni okudum, onaylıyorum.
+              Hizmetin cayma süresi içinde başlatılmasını istiyorum; kişiye özel programım bana iletildikten sonra cayma hakkımın olmadığını biliyorum.</span>
             </label>
           </div>
         </div>
@@ -71,11 +72,10 @@
           <div class="ozet-kart">
             <h2>Sipariş özeti</h2>
             <div id="ozet"></div>
-            <div class="ozet-satir"><span>Kargo</span><span class="noktalar"></span><span class="ucretsiz">Ücretsiz</span></div>
             <div class="ozet-satir toplam"><span>Toplam</span><span class="noktalar"></span><span id="toplam"></span></div>
             <div id="hata" class="hata-kutu gizli" role="alert"></div>
             <p><button type="submit" class="btn tam buyuk" id="odeBtn">Güvenli ödemeye geç</button></p>
-            <p class="guven"><i data-ikon="kilit"></i> Kart bilgileriniz iyzico'nun güvenli sayfasında girilir</p>
+            <p class="guven"><i data-ikon="kilit"></i> Kart bilgilerin iyzico'nun güvenli sayfasında girilir</p>
             <div class="kart-markalari" aria-hidden="true"><span>VISA</span><span>MASTERCARD</span><span>TROY</span></div>
           </div>
         </aside>

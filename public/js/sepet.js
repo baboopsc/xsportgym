@@ -15,7 +15,7 @@
           <a class="sepet-satir__ad" href="${link}">${esc(k.urunAdi)}</a>
           <div class="soluk kucuk">${esc(k.secenekAdi)} · ${tlKisa(k.birimFiyatKurus)}</div>
           <div class="sepet-satir__alt">
-            <div class="adet-kutu kucuk-adet" role="group" aria-label="${esc(k.urunAdi)} adedi">
+            <div class="adet-kutu kucuk-adet gizli" role="group" aria-label="${esc(k.urunAdi)} adedi">
               <button type="button" data-azalt="${k.secenekId}" aria-label="Azalt" ${k.adet <= 1 ? 'disabled' : ''}>${ikon('eksi')}</button>
               <input type="number" value="${k.adet}" min="1" max="${enFazla}" data-adet-giris="${k.secenekId}" aria-label="Adet">
               <button type="button" data-artir="${k.secenekId}" data-max="${enFazla}" aria-label="Artır" ${k.adet >= enFazla ? 'disabled' : ''}>${ikon('arti')}</button>

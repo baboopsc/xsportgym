@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Xsportgym | Tüm linkler</title>
-  <meta name="description" content="Xsportgym, Antakya Güzelburç. Üyelik paketleri, personal training kampanyası, yol tarifi ve iletişim tek sayfada.">
-  <meta name="theme-color" content="#0b0d14">
+  <meta name="description" content="Xsportgym, Antakya Güzelburç. Online koçluk paketleri, kampanyalar, yol tarifi ve iletişim tek sayfada.">
+  <meta name="theme-color" content="#f2efe9">
   <meta property="og:title" content="Xsportgym | Tüm linkler">
-  <meta property="og:description" content="Üyelik, kampanyalar, yol tarifi ve iletişim tek sayfada.">
+  <meta property="og:description" content="Online koçluk, kampanyalar, yol tarifi ve iletişim tek sayfada.">
   <meta property="og:image" content="/img/logo-instagram.jpg">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
@@ -23,11 +23,18 @@
       <p class="link-durum" id="durum" hidden><span class="link-durum__nokta"></span><span id="durumYazi"></span></p>
     </header>
 
+    <!-- Online koçluk seçenekleri paketlerden otomatik gelir (link.js) -->
+    <section class="link-kocluk gizli" id="kocluk" aria-labelledby="koclukBaslik">
+      <h2 id="koclukBaslik"><span lang="en">Online</span> koçluk</h2>
+      <p>Değişime benimle başla</p>
+      <div class="link-liste" id="koclukListe"></div>
+    </section>
+
     <nav class="link-liste" aria-label="Bağlantılar" id="linkler">
       <!-- WhatsApp ve telefon butonları, işletme bilgileri doluysa link.js ile buraya eklenir -->
       <a class="link-btn" href="/paketler.html">
         <span class="link-btn__ikon"><i data-ikon="dambil"></i></span>
-        <span class="link-btn__yazi"><b>Üyelik paketleri</b><small>Aylık, 3 aylık ve personal training</small></span>
+        <span class="link-btn__yazi"><b>Tüm paketler</b><small>Online koçluk, antrenman programı ve beslenme planı</small></span>
         <i data-ikon="ok-capraz"></i>
       </a>
       <a class="link-btn" href="/#kampanyalar">
@@ -67,7 +74,7 @@
     </section>
 
     <footer class="link-alt">
-      <a href="/" class="link-alt__logo" aria-label="Xsportgym ana sayfa"><img src="/img/logo-x.svg" alt="" width="28" height="28"><span>xsport<span>gym</span></span></a>
+      <a href="/" class="link-alt__logo" aria-label="Xsportgym ana sayfa"><span class="link-alt__isaret"></span><span>xsport<span>gym</span></span></a>
       <a href="https://www.instagram.com/xsportgymm/" target="_blank" rel="noopener" class="link-alt__insta"><i data-ikon="instagram"></i> @xsportgymm</a>
     </footer>
   </main>
