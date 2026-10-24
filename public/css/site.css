@@ -462,7 +462,6 @@ legend { padding: 0; }
 .yuzen-kart__ust p { margin: max(6px, calc(8 * var(--u))) 0 0; font-size: max(11.5px, calc(12 * var(--u))); line-height: 1.5; color: var(--koyu-soluk); }
 .yuzen-kart .daire-ok { --d: max(36px, calc(44 * var(--u))); }
 .yuzen-kart .gorsel-yeri { aspect-ratio: 326 / 186; border-radius: max(12px, calc(16 * var(--u))); }
-.kahraman--hak .yuzen-kart { bottom: calc(-83 * var(--u)); }
 
 /* ==========================================================================
    Tanıtım yazısı (ana sayfa ve hakkımızda)
@@ -1374,7 +1373,6 @@ main { animation: sayfaGir 0.7s var(--ease) both; }
   .cekmece__panel { top: auto; right: 0; bottom: 0; width: 100%; height: min(86vh, 720px); border-radius: 26px 26px 0 0; transform: translateY(100%); }
   .yasal table.bilgi th { width: auto; }
   .bakim-izgara { grid-template-columns: 1fr; }
-  .logo__yazi span { display: none; }
   .aciklama-bolum.tek .dikim-adimlari ol { grid-template-columns: 1fr; }
   .odeme-adimlari { gap: 8px; font-size: 13px; }
   .odeme-adimlari li { gap: 8px; }
@@ -1431,11 +1429,11 @@ h1 em, h2 em, h2 .hafif { color: var(--hafif); }
 
 /* ---------- Logo: tek renkli X işareti (vurgu renginde) ---------- */
 .logo__isaret {
-  width: max(34px, calc(40 * var(--u))); height: max(34px, calc(40 * var(--u))); background: var(--a);
+  width: max(32px, calc(38 * var(--u))); height: max(32px, calc(38 * var(--u))); background: var(--a);
   -webkit-mask: url('/img/logo-x-mono.svg') center / contain no-repeat; mask: url('/img/logo-x-mono.svg') center / contain no-repeat;
 }
 .logo__isaret img { display: none; }
-.logo__yazi { font: 700 max(21px, calc(25 * var(--u)))/1 var(--logo); letter-spacing: 0.01em; text-transform: uppercase; }
+.logo__yazi { font: 700 max(21px, calc(25 * var(--u)))/1 var(--logo); letter-spacing: 0.06em; text-transform: uppercase; white-space: pre; }
 .logo__yazi b { font-weight: 700; color: inherit; }
 .logo__yazi span, .alt .logo__yazi span { color: var(--a); }
 .alt .logo { color: #ffffff; }
@@ -1780,3 +1778,67 @@ h1 em, h2 em, h2 .hafif { color: var(--hafif); }
 .link-kocluk > p { margin: -6px 0 4px; text-align: center; color: var(--soluk); font: 600 15px/1.2 var(--serif); }
 .link-kocluk .link-btn { box-shadow: inset 0 0 0 1.5px rgba(var(--a-rgb), 0.55); }
 .link-kocluk .link-btn__ikon { background: var(--a); color: var(--a-yazi); }
+
+/* ==========================================================================
+   Koyu fotoğraflı alanlar
+   Salonun fotoğrafları karanlık ve loş; büyük görselli alanlarda (en üstteki kart,
+   sayfa başlığı, geniş bant) yazılar açık renge, fotoğrafın üstündeki geçiş koyuya döner.
+   ========================================================================== */
+.kahraman__kart, .sayfa-basi:not(.sade) .sayfa-basi__kart, .bant {
+  --zemin-rgb: 12, 12, 12;
+  --siyah: #ffffff; --baslik: #ffffff; --metin: #f2efe9;
+  --hafif: rgba(255, 255, 255, 0.6); --soluk: #cfcac2; --yazi-2: #e2ded6;
+  --a-acik: var(--a); --ters-rgb: 255, 255, 255;
+  color: var(--metin);
+}
+.kahraman__arka, .sayfa-basi__arka, .bant { background: #141414; }
+/* Fotoğrafın üstündeki açık renkli küçük kartlar kendi renklerini korur */
+:is(.kahraman__kart, .sayfa-basi__kart, .bant) :is(.sayi-kart, .no-kart) {
+  --zemin-rgb: 242, 239, 233; --siyah: #121212; --metin: #161616; --soluk: #6b665e; --ters-rgb: 18, 18, 18;
+}
+.bant::before {
+  background:
+    linear-gradient(180deg, rgba(12, 12, 12, 0.82) 0%, rgba(12, 12, 12, 0.35) 38%, rgba(12, 12, 12, 0.1) 60%, rgba(12, 12, 12, 0.55) 100%);
+}
+/* Üst menü koyu fotoğrafın üstündeyken logo ve ikonlar beyaz; kaydırınca eski haline döner */
+body:has(.kahraman__kart, .sayfa-basi:not(.sade)) .ust:not(.kaydi) :is(.logo, .ust__araclar > .ikon-btn) { color: #ffffff; }
+body:has(.kahraman__kart, .sayfa-basi:not(.sade)) .ust:not(.kaydi) .ikon-btn:hover { background: rgba(255, 255, 255, 0.12); border-color: transparent; }
+/* Panelden fotoğraf eklenmemiş paketlerdeki varsayılan görsel: yüz kadrajda kalsın */
+.cerceve img[src$="/img/site/paket.jpg"] { object-position: 50% 22%; }
+:is(.kahraman__kart, .sayfa-basi__kart, .bant) .daire-ok.acik { background: var(--a); color: var(--a-yazi); }
+
+/* ---------- Salonun logosu (renkli) ---------- */
+.logo__tam { display: block; height: max(32px, calc(48 * var(--u))); width: auto; }
+.logo__isaret { background: none; -webkit-mask: none; mask: none; }
+.logo__isaret img { display: block; width: 100%; height: 100%; }
+
+/* ==========================================================================
+   Logo renkleri: pembe vurgu, mavi detay. İki mod: karanlık (varsayılan) ve aydınlık.
+   Mod, sağ üstteki ay/güneş düğmesiyle değişir (bas.js + ortak.js).
+   ========================================================================== */
+:root {
+  --pembe: #E0188F; --mavi: #22B2CF; --mavi-yazi: #06232b;
+  --a: #D00E80; --a-rgb: 208, 14, 128; --a-acik: #B00A6C; --a-koyu: #B00A6C; --a-yazi: #ffffff; --a-yazi-rgb: 255, 255, 255;
+}
+:is(.kahraman__kart, .sayfa-basi__kart, .bant) { --a-acik: #ff4fae; }
+:root[data-tema="koyu"] {
+  --zemin: #0b0b0d; --zemin-rgb: 11, 11, 13; --zemin-acik: #111114; --zemin-koyu: #18181c; --kutu: #121215;
+  --kagit: #16161a; --kagit-rgb: 22, 22, 26; --kagit-yari: #1a1a1f; --orman: #141418; --orman-rgb: 20, 20, 24; --orman-2: #1d1d22;
+  --siyah: #f5f5f7; --metin: #e9e9ee; --baslik: #f5f5f7; --hafif: #7a7a86; --soluk: #9a9aa6; --yazi-2: #c9c9d2;
+  --koyu-soluk: #9a9aa6; --koyu-yazi: #e9e9ee; --ters-rgb: 255, 255, 255; color-scheme: dark;
+  --a: #E0188F; --a-rgb: 224, 24, 143; --a-acik: #ff4fae; --a-koyu: #c0127a;
+  --golge: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 30px 60px -30px rgba(0, 0, 0, 0.6);
+  --golge-k: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 20px 40px -26px rgba(0, 0, 0, 0.55);
+  --yesil-yazi: #6ee7b7; --sari-yazi: #ffcf85; --kirmizi-yazi: #ff9aa5; --kirmizi: #ff5c6c; --kirmizi-acik: rgba(255, 92, 108, 0.14);
+}
+/* Karanlıkta başlıktaki vurgu yazısı logodaki gibi pembeden maviye geçer */
+:root[data-tema="koyu"] .vurgu-yazi { background: linear-gradient(90deg, var(--pembe), var(--mavi)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+:root[data-tema="koyu"] .ust-baslik::before { background: var(--mavi); }
+:root[data-tema="koyu"] .fiyat-kart.one-cikan { box-shadow: 0 0 0 1.5px var(--mavi); }
+.fiyat-kart__rozet { background: var(--mavi) !important; color: var(--mavi-yazi) !important; }
+:root[data-tema="acik"] .fiyat-kart.one-cikan .btn.sari { background: var(--mavi); color: var(--mavi-yazi); }
+/* Mod düğmesi: karanlıkta güneş, aydınlıkta ay görünür */
+.tema-btn .tema-ay { display: none; }
+:root[data-tema="acik"] .tema-btn .tema-ay { display: block; }
+:root[data-tema="acik"] .tema-btn .tema-gunes { display: none; }
+html { transition: background-color 0.3s; }

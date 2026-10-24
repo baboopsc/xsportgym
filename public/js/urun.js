@@ -81,6 +81,11 @@
         ? urun.gorseller.map((id, i) => `<button type="button" data-id="${id}" aria-label="${i + 1}. fotoğraf"><img src="${gorselUrl(id)}" alt="" loading="lazy"></button>`).join('')
         : '';
       gorselSec(urun.gorseller[0]);
+    } else if (typeof GORSELLER === 'object' && GORSELLER.paket) {
+      // Panelden fotoğraf eklenmemiş paket: sitenin varsayılan paket görseli
+      $('anaGorsel').alt = urun.ad;
+      $('anaGorsel').src = GORSELLER.paket;
+      $('anaCerceve').style.cursor = 'default';
     } else {
       $('anaGorsel').classList.add('gizli');
       $('bosGorsel').classList.remove('gizli');

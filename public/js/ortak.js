@@ -172,8 +172,11 @@ const Site = (() => {
 
   // ---------- Paket kartı (ana sayfa, paketler, diğer paketler) ----------
   function cerceve(gorselId, alt, { yukle = 'lazy' } = {}) {
-    return `<span class="cerceve"><span class="cerceve__ic">${gorselId
-      ? `<img src="${gorselUrl(gorselId)}" alt="${esc(alt)}" loading="${yukle}" decoding="async" data-yukleniyor>`
+    // Fotoğrafı olmayan paketlerde gorseller.js'teki varsayılan paket görseli kullanılır
+    const varsayilan = typeof GORSELLER === 'object' ? GORSELLER.paket : '';
+    const kaynak = gorselId ? gorselUrl(gorselId) : varsayilan;
+    return `<span class="cerceve"><span class="cerceve__ic">${kaynak
+      ? `<img src="${esc(kaynak)}" alt="${esc(alt)}" loading="${yukle}" decoding="async" data-yukleniyor>`
       : `<span class="cerceve__bos">${window.Ikon ? Ikon.cizim('dambil') : ''}<span>Fotoğraf yakında</span></span>`}</span></span>`;
   }
 
@@ -291,7 +294,8 @@ const Site = (() => {
     ['/#kampanyalar', 'Kampanyalar'],
     ['/#iletisim', 'İletişim']
   ];
-  const logoHtml = () => `<span class="logo__isaret"><img src="/img/logo-x.svg" alt="" width="48" height="48"></span><span class="logo__yazi"><b>xsport</b><span>gym</span></span>`;
+  // Salonun logosu (pembe-mavi X + SPORT GYM). Dosya: public/img/logo-yatay.svg
+  const logoHtml = () => `<img class="logo__tam" src="/img/logo-yatay.svg" alt="X Sport Gym" width="191" height="40">`;
 
   // Test şeridinin yüksekliği CSS'e verilir; üst menünün kendi yüksekliği CSS'te (--ust-h)
   function ustMenuYuksekligi() {
@@ -315,6 +319,7 @@ const Site = (() => {
               : `<a href="${href}" ${secili(href) ? 'aria-current="page"' : ''}>${ad}</a>`)).join('')}
           </nav>
           <div class="ust__araclar">
+            <button class="ikon-btn tema-btn" type="button" data-tema-degis aria-label="Aydınlık / karanlık mod"><svg class="ikon tema-ay" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg><svg class="ikon tema-gunes" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button>
             <a class="ikon-btn" href="https://www.instagram.com/xsportgymm/" target="_blank" rel="noopener" aria-label="Instagram'da Xsportgym">${ikon('instagram')}</a>
             <a class="ikon-btn" href="/giris.html" data-hesap-link aria-label="Giriş yap">${ikon('hesap')}</a>
             <a class="ikon-btn sepet-btn" href="/sepet.html" data-sepet-ac aria-label="Sepetim">${ikon('sepet')}<span class="sepet-sayi gizli" data-sepet-sayi>0</span></a>
@@ -595,6 +600,13 @@ const Site = (() => {
   // Script sayfanın sonunda olduğu için üst menü hemen çizilir (yanıp sönme olmaz)
   ustCiz();
   kaydirinca((y) => document.querySelector('[data-ust]')?.classList.toggle('kaydi', y > 30));
+  // Aydınlık / karanlık mod düğmesi
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-tema-degis]')) return;
+    const yeni = document.documentElement.dataset.tema === 'acik' ? 'koyu' : 'acik';
+    document.documentElement.dataset.tema = yeni;
+    try { localStorage.setItem('xsport-tema', yeni); } catch { /* gizli sekme vb. */ }
+  });
   window.addEventListener('resize', ustMenuYuksekligi);
   hazirla(document.body);
   isletmeAl().then((i) => { testSeridiEkle(i); altCiz(i); });
