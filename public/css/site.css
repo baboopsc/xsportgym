@@ -659,8 +659,8 @@ legend { padding: 0; }
   padding: max(10px, calc(14 * var(--u))); border-radius: max(18px, calc(24 * var(--u))); background: var(--kagit); color: inherit; text-decoration: none;
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
-.rehber-tek:hover { transform: translateY(-4px); box-shadow: var(--golge-k); }
-.rehber-tek:hover .daire-ok { transform: rotate(45deg); }
+.rehber-tek__alt:hover .daire-ok { transform: rotate(45deg); }
+
 .rehber-tek .gorsel-yeri { min-height: max(240px, calc(400 * var(--u))); border-radius: max(12px, calc(16 * var(--u))); }
 .rehber-tek__govde { display: flex; flex-direction: column; justify-content: center; gap: max(12px, calc(16 * var(--u))); padding: max(8px, calc(24 * var(--u))) max(8px, calc(30 * var(--u))) max(8px, calc(24 * var(--u))) 0; }
 .rehber-tek__govde small { font-size: max(11.5px, calc(12 * var(--u))); color: var(--vurgu-acik); }
@@ -669,7 +669,7 @@ legend { padding: 0; }
 .rehber-tek__govde li { counter-increment: r; display: grid; grid-template-columns: auto 1fr; gap: 12px; font-size: max(13.5px, calc(14.5 * var(--u))); line-height: 1.5; color: var(--soluk); }
 .rehber-tek__govde li::before { content: "0" counter(r); color: var(--vurgu-acik); font-size: 0.9em; padding-top: 1px; }
 .rehber-tek__govde li b { font-weight: 500; color: var(--metin); }
-.rehber-tek__alt { display: inline-flex; align-items: center; gap: 12px; margin-top: 4px; font-size: var(--f-btn); color: var(--siyah); }
+.rehber-tek__alt { text-decoration: none; align-self: flex-start; display: inline-flex; align-items: center; gap: 12px; margin-top: 4px; font-size: var(--f-btn); color: var(--siyah); }
 
 /* ==========================================================================
    Sık sorulanlar
@@ -1842,3 +1842,18 @@ body:has(.kahraman__kart, .sayfa-basi:not(.sade)) .ust:not(.kaydi) .ikon-btn:hov
 :root[data-tema="acik"] .tema-btn .tema-ay { display: block; }
 :root[data-tema="acik"] .tema-btn .tema-gunes { display: none; }
 html { transition: background-color 0.3s; }
+
+/* Antrenör kartı: Selen'in fotoğrafları yana kaydırılır */
+.selen-kaydir { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: var(--r); aspect-ratio: 4 / 5; max-height: 640px; scrollbar-width: thin; }
+.selen-kaydir img { flex: 0 0 100%; width: 100%; height: 100%; object-fit: cover; object-position: 50% 22%; scroll-snap-align: start; border-radius: var(--r); }
+.selen-galeri { position: relative; }
+.selen-kaydir { gap: 0; scrollbar-width: none; }
+.selen-kaydir::-webkit-scrollbar { display: none; }
+@media (min-width: 900px) { .selen-kaydir { aspect-ratio: 4 / 5; max-height: 620px; } }
+.selen-ok {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 46px; height: 46px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; font: 400 32px/1 var(--sans); padding-bottom: 4px;
+  background: rgba(0, 0, 0, 0.55); color: #fff; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: background 0.2s;
+}
+.selen-ok:hover { background: var(--a); }
+.selen-ok.sol { left: 12px; } .selen-ok.sag { right: 12px; }

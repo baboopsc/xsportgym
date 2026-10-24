@@ -600,6 +600,17 @@ const Site = (() => {
   // Script sayfanın sonunda olduğu için üst menü hemen çizilir (yanıp sönme olmaz)
   ustCiz();
   kaydirinca((y) => document.querySelector('[data-ust]')?.classList.toggle('kaydi', y > 30));
+  // Selen'in fotoğrafları: sağ/sol ok düğmeleri
+  document.addEventListener('click', (e) => {
+    const ok = e.target.closest('[data-selen-ok]');
+    if (!ok) return;
+    e.preventDefault(); e.stopPropagation();
+    const kutu = ok.parentElement.querySelector('.selen-kaydir');
+    const g = kutu.clientWidth, son = kutu.scrollWidth - g;
+    let x = kutu.scrollLeft + Number(ok.dataset.selenOk) * g;
+    if (x > son + 5) x = 0; else if (x < -5) x = son;
+    kutu.scrollTo({ left: x, behavior: 'smooth' });
+  });
   // Aydınlık / karanlık mod düğmesi
   document.addEventListener('click', (e) => {
     if (!e.target.closest('[data-tema-degis]')) return;
