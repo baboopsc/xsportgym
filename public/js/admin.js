@@ -18,7 +18,7 @@
     ['seviye', 'yildiz', 'Seviye', 'Başlangıç ve orta'], ['yer', 'konum', 'Nerede uygulanır', 'Salonda veya evde'],
     ['baslangic', 'yildirim', 'Başlangıç', 'Ödemeden sonra 24 saat içinde']
   ];
-  const BASLIKLAR = { siparisler: 'Öğrenciler ve siparişler', urunler: 'Paketler', uyeler: 'Üyeler', hesap: 'Hesabım' };
+  const BASLIKLAR = { siparisler: 'Öğrenciler ve siparişler', urunler: 'Paketler', ogrenciler: 'Öğrenciler', hesap: 'Hesabım' };
 
   let DURUM_ADLARI = {};
   let GECISLER = {};
@@ -26,6 +26,8 @@
   const ODENMEMIS = ['havale-bekleniyor', 'odeme-bekliyor', 'baslatilamadi', 'odeme-basarisiz', 'terk-edildi'];
   const OLAY_ADLARI = {
     'siparis-olusturuldu': 'Sipariş oluşturuldu',
+    'havale-bekleniyor': 'Havale bekleniyor (IBAN bilgileri öğrenciye gönderildi)',
+    'havale-onaylandi': 'Havale onaylandı',
     'odeme-sayfasi-acildi': 'Ödeme sayfası açıldı',
     'odeme-baslatilamadi': 'Ödeme sayfası açılamadı',
     'odeme-alindi': 'Ödeme alındı',
@@ -108,11 +110,11 @@
     $('panelBaslik').textContent = BASLIKLAR[sekme];
     $('siparislerSekmesi').classList.toggle('gizli', sekme !== 'siparisler');
     $('urunlerSekmesi').classList.toggle('gizli', sekme !== 'urunler');
-    $('uyelerSekmesi').classList.toggle('gizli', sekme !== 'uyeler');
+    $('ogrencilerSekmesi').classList.toggle('gizli', sekme !== 'ogrenciler');
     $('hesapSekmesi').classList.toggle('gizli', sekme !== 'hesap');
     $('urunDuzenle').classList.add('gizli');
     if (sekme === 'urunler') urunleriYukle();
-    else if (sekme === 'uyeler') uyeleriYukle();
+    else if (sekme === 'ogrenciler') ogrencileriYukle();
     else if (sekme === 'siparisler') siparisleriYukle();
   });
 
@@ -143,27 +145,47 @@
     }
   });
 
-  // ---------- Üyeler ----------
+  // ---------- Öğrenciler ----------
+  // Her öğrenci (aynı e-posta) bir satır: kaç paket aldı, ne kadar ödedi, şu an ne durumda.
+  // "Siparişleri" butonu o öğrencinin bütün siparişlerini (tamamlanan ve iptaller dahil) açar.
 
-  async function uyeleriYukle() {
-    const kutu = $('uyeListesi');
+  const sekmeAc = (sekme) => document.querySelector(`.sekme[data-sekme="${sekme}"]`).click();
+
+  async function ogrencileriYukle() {
+    const kutu = $('ogrenciListesi');
     kutu.innerHTML = '<p class="yukleniyor-yazi">Yükleniyor</p>';
     try {
-      const uyeler = await api('/api/admin/uyeler');
-      kutu.innerHTML = uyeler.length ? `
-        <div class="kart"><p class="kucuk soluk">${uyeler.length} üye. Üye olmadan sipariş verenler bu listede yoktur.</p>
+      const ara = $('ogrenciAra').value.trim();
+      const liste = await api(`/api/admin/ogrenciler${ara ? `?ara=${encodeURIComponent(ara)}` : ''}`);
+      kutu.innerHTML = liste.length ? `
+        <div class="kart"><p class="kucuk soluk">${liste.length} öğrenci. Aynı e-postayla verilen siparişler tek öğrenci olarak sayılır; tamamlanan ve iptal edilen siparişler de burada saklanır.</p>
         <div class="tablo-kaydir"><table class="veri-tablo">
-          <tr><th>Ad Soyad</th><th>İletişim</th><th>Kayıt</th><th class="sag">Sipariş</th></tr>
-          ${uyeler.map(u => `
-            <tr><td>${esc(u.ad)} ${esc(u.soyad)}<div class="kucuk">${esc(u.il || '')}</div></td>
-              <td>${esc(u.email)}<div class="kucuk">${esc(u.telefon || '')}</div></td>
-              <td class="kucuk">${esc(tarih(u.olusturma))}</td>
-              <td class="sag">${esc(u.siparis_sayisi)}<div class="kucuk">${tl(u.toplam_kurus)}</div></td></tr>`).join('')}
-        </table></div></div>` : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Henüz üye yok</h3><p>Müşteriler üye olduğunda burada listelenir.</p></div>`;
+          <tr><th>Öğrenci</th><th>İletişim</th><th>Durum</th><th class="sag">Paket / ödenen</th><th>İlk – son sipariş</th><th></th></tr>
+          ${liste.map(o => `
+            <tr><td><strong>${esc(o.ad)} ${esc(o.soyad)}</strong><div class="kucuk">${esc(o.il || '')}</div></td>
+              <td><a href="tel:${esc(o.telefon)}">${esc(o.telefon)}</a><div class="kucuk"><a href="mailto:${esc(o.email)}">${esc(o.email)}</a></div></td>
+              <td><span class="rozet ${esc(o.son_durum)}">${esc(DURUM_ADLARI[o.son_durum] || o.son_durum)}</span>${o.aktif ? '<div class="kucuk tamam ogrenci-aktif">Koçluğu sürüyor</div>' : ''}</td>
+              <td class="sag">${esc(o.paket_sayisi)} paket<div class="kucuk">${tl(o.toplam_kurus)}</div></td>
+              <td class="kucuk">${esc(tarih(o.ilk))}${o.siparis_sayisi > 1 ? `<br>${esc(tarih(o.son))}` : ''}</td>
+              <td class="sag"><button type="button" class="ogrenciSiparisleri" data-email="${esc(o.email)}">Siparişleri (${esc(o.siparis_sayisi)})</button></td></tr>`).join('')}
+        </table></div></div>`
+        : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>${ara ? 'Öğrenci bulunamadı' : 'Henüz öğrenci yok'}</h3><p>${ara ? 'Aramanıza uyan öğrenci yok.' : 'İlk sipariş geldiğinde öğrenciler burada listelenir.'}</p></div>`;
     } catch (hata) {
       kutu.innerHTML = `<p class="hata">${esc(hata.message)}</p>`;
     }
   }
+
+  let ogrenciAraZamani = null;
+  $('ogrenciAra').addEventListener('input', () => { clearTimeout(ogrenciAraZamani); ogrenciAraZamani = setTimeout(ogrencileriYukle, 400); });
+  $('ogrenciListesi').addEventListener('click', (e) => {
+    const btn = e.target.closest('.ogrenciSiparisleri');
+    if (!btn) return;
+    // Siparişler sekmesine geç: bu öğrencinin bütün siparişleri
+    sekmeAc('siparisler');
+    $('filtre').value = 'tum';
+    $('ara').value = btn.dataset.email;
+    siparisleriYukle();
+  });
 
   // ---------- Siparişler ----------
 
@@ -185,7 +207,11 @@
     }).join('');
     $('filtre').value = secili;
 
-    const KARTLAR = [['havale-bekleniyor', 'Havale bekleyen', 'saat'], ['odendi', 'Yeni öğrenci', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'], ['hazirlaniyor', 'Program hazırlanıyor', 'not'], ['kargoda', 'Koçluk sürüyor', 'dambil']];
+    sayilar.tum = Object.entries(sayilar).filter(([d]) => !['odeme-bekliyor', 'baslatilamadi', 'odeme-basarisiz', 'terk-edildi', 'tum'].includes(d))
+      .reduce((t, [, n]) => t + n, 0);
+    const KARTLAR = [['havale-bekleniyor', 'Havale bekleyen', 'saat'], ['odendi', 'Yeni öğrenci', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'],
+      ['hazirlaniyor', 'Program hazırlanıyor', 'not'], ['kargoda', 'Koçluk sürüyor', 'dambil'], ['teslim-edildi', 'Tamamlandı', 'kupa'],
+      ['iptal', 'İptal edilen', 'kapat'], ['tum', 'Tüm siparişler', 'liste']];
     $('ozetKartlari').innerHTML = KARTLAR.map(([d, ad, ik]) => `
       <button type="button" class="ozet-karti ${d} ${secili === d ? 'secili' : ''} ${(sayilar[d] || 0) > 0 ? 'dolu' : ''}" data-filtre="${d}">
         <span class="ozet-karti__ikon">${ikon(ik)}</span>
@@ -253,6 +279,29 @@
       </div>`;
   }
 
+  // Durum değişince sipariş bulunduğu listeden çıkabilir. Kaybolmuş gibi görünmesin diye:
+  // sipariş artık seçili listede görünmeyecekse yeni durumunun listesine geçilir ve bilgi mesajı çıkar.
+  const AKTIF_LISTE = ['havale-bekleniyor', 'inceleme', 'odendi', 'hazirlaniyor', 'kargoda'];
+  function durumDegisti(yeniDurum, siparisNo) {
+    const filtre = $('filtre').value;
+    const gorunur = filtre === 'tum' || filtre === yeniDurum || (filtre === '' && AKTIF_LISTE.includes(yeniDurum));
+    if (!gorunur && FILTRELER.some(([d]) => d === yeniDurum)) $('filtre').value = yeniDurum;
+    filtreleriDoldur();
+    siparisleriYukle();
+    bildirimGoster(`${siparisNo ? `${siparisNo} ` : 'Sipariş '}"${DURUM_ADLARI[yeniDurum] || yeniDurum}" durumuna alındı.${gorunur ? '' : ' Liste o bölüme geçti.'}`);
+  }
+
+  function bildirimGoster(metin) {
+    document.querySelectorAll('.panel-bildirim').forEach(b => b.remove());
+    const b = document.createElement('div');
+    b.className = 'panel-bildirim';
+    b.setAttribute('role', 'status');
+    b.innerHTML = `${ikon('tik-daire')}<span>${esc(metin)}</span>`;
+    document.body.appendChild(b);
+    setTimeout(() => b.classList.add('gidiyor'), 3800);
+    setTimeout(() => b.remove(), 4300);
+  }
+
   async function siparisleriYukle() {
     const filtre = $('filtre').value;
     const ara = $('ara').value.trim();
@@ -290,7 +339,7 @@
             <button class="elleIptal">Sadece iptal olarak işaretle</button></p>` : ''}` : ''}
         ${s.sozlesme_var ? `<p><a href="/api/admin/siparisler/${esc(s.id)}/sozlesme" target="_blank" rel="noopener">Müşterinin onayladığı sözleşmeyi aç</a>
           <span class="kucuk">(onay: ${esc(tarih(s.sozlesme_onay_tarihi))}, IP: ${esc(s.ip || '-')})</span></p>` : ''}
-        <h4>Geçmiş</h4>
+        <h4>İşlem geçmişi</h4>
         <ul class="olaylar">
           ${s.olaylar.map(o => {
             const det = o.detay || {};
@@ -301,7 +350,8 @@
               det.neden || '', det.hata || '',
               Array.isArray(det.urunler) ? det.urunler.map(u => `${u.urun}: istenen ${u.istenen}, stok ${u.stok}`).join('; ') : ''
             ].filter(Boolean).join(' · ');
-            return `<li>${esc(tarih(o.olusturma))} — ${esc(OLAY_ADLARI[o.olay] || o.olay)}${ek ? ` <span class="kucuk">(${esc(ek)})</span>` : ''}</li>`;
+            const kim = det.yapan ? ` <span class="kucuk soluk">· ${esc(det.yapan)}</span>` : '';
+            return `<li>${esc(tarih(o.olusturma))} — ${esc(OLAY_ADLARI[o.olay] || o.olay)}${ek ? ` <span class="kucuk">(${esc(ek)})</span>` : ''}${kim}</li>`;
           }).join('')}
         </ul>
         <h4>E-postalar</h4>
@@ -345,9 +395,8 @@
       hedef.disabled = true;
       mesaj.textContent = '';
       try {
-        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: onay ? 'odendi' : 'iptal' } });
-        filtreleriDoldur();
-        siparisleriYukle();
+        const r = await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: onay ? 'odendi' : 'iptal' } });
+        durumDegisti(r.durum, kart.querySelector('.siparis-no-yazi')?.textContent || '');
       } catch (hata) {
         mesaj.textContent = hata.message;
         hedef.disabled = false;
@@ -375,9 +424,8 @@
       hedef.innerHTML = 'İade ediliyor...';
       mesaj.textContent = '';
       try {
-        await api(`/api/admin/siparisler/${id}/iade`, { method: 'POST' });
-        filtreleriDoldur();
-        siparisleriYukle();
+        const r = await api(`/api/admin/siparisler/${id}/iade`, { method: 'POST' });
+        durumDegisti(r.durum, kart.querySelector('.siparis-no-yazi')?.textContent || '');
       } catch (hata) {
         mesaj.textContent = hata.message;
         hedef.disabled = false;
@@ -390,9 +438,8 @@
       if (!confirm('Sipariş iptal / iade edildi olarak işaretlenecek ve öğrenciye e-posta gidecek.\nParayı öğrenciye kendin (havale ile ya da iyzico panelinden) iade ettiysen devam et.\n\nParayı iade ettiğinden emin misin?')) return;
       try {
         const yeni = (await api(`/api/admin/siparisler/${id}`)).durum === 'teslim-edildi' ? 'iade-edildi' : 'iptal';
-        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: yeni, elleIade: true } });
-        filtreleriDoldur();
-        siparisleriYukle();
+        const r = await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: yeni, elleIade: true } });
+        durumDegisti(r.durum, kart.querySelector('.siparis-no-yazi')?.textContent || '');
       } catch (hata) {
         alert(hata.message);
       }
@@ -406,9 +453,8 @@
       if (durum === 'odendi' && !confirm('iyzico panelinden ödemeyi kontrol ettiniz ve sorun olmadığından emin misiniz?')) return;
       hedef.disabled = true;
       try {
-        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum } });
-        filtreleriDoldur();
-        siparisleriYukle();
+        const r = await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum } });
+        durumDegisti(r.durum, kart.querySelector('.siparis-no-yazi')?.textContent || '');
       } catch (hata) {
         mesaj.textContent = hata.message;
         hedef.disabled = false;

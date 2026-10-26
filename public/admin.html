@@ -23,7 +23,7 @@
       <nav class="sekmeler" role="tablist" aria-label="Panel bölümleri">
         <button class="sekme secili" data-sekme="siparisler" role="tab"><i data-ikon="liste"></i><span>Siparişler</span><span class="sekme-sayi gizli" id="yeniSayi"></span></button>
         <button class="sekme" data-sekme="urunler" role="tab"><i data-ikon="dambil"></i><span>Paketler</span></button>
-        <button class="sekme" data-sekme="uyeler" role="tab"><i data-ikon="kullanicilar"></i><span>Üyeler</span></button>
+        <button class="sekme" data-sekme="ogrenciler" role="tab"><i data-ikon="kullanicilar"></i><span>Öğrenciler</span></button>
         <button class="sekme" data-sekme="hesap" role="tab"><i data-ikon="hesap"></i><span>Hesabım</span></button>
       </nav>
       <div class="panel-yan__alt">
@@ -67,9 +67,13 @@
         <div id="urunListesi" class="urun-tablo"></div>
       </section>
 
-      <!-- ÜYELER -->
-      <section id="uyelerSekmesi" class="gizli">
-        <div id="uyeListesi"></div>
+      <!-- ÖĞRENCİLER: siparişlerden derlenir, her öğrencinin bütün paketleri ve geçmişi -->
+      <section id="ogrencilerSekmesi" class="gizli">
+        <div class="arac-satiri">
+          <label class="arama-kutu" for="ogrenciAra"><span class="ekran-okuyucu">Öğrenci ara</span><i data-ikon="arama"></i>
+            <input id="ogrenciAra" type="search" placeholder="Ad, telefon veya e-posta"></label>
+        </div>
+        <div id="ogrenciListesi"></div>
       </section>
 
       <!-- YÖNETİCİ HESABI -->

@@ -486,6 +486,20 @@ function testleriCalistir() {
       assert.equal(await stok(elma), stokOnce - 1);
       assert.ok(await tek('SELECT 1 AS var FROM eposta_kuyrugu WHERE anahtar = $1', [`siparis-alindi:${r.json.siparisNo}`]), '"ödemen alındı" e-postası gitmeli');
 
+      // İşlem geçmişinde kimin onayladığı yazar
+      const gecmis = (await panel(yol)).json.olaylar;
+      const onayOlayi = gecmis.find(o => o.olay === 'havale-onaylandi');
+      assert.ok(onayOlayi && onayOlayi.detay.yapan, 'havale onayını yapan yönetici kayda geçmeli');
+      assert.ok(gecmis.find(o => o.olay === 'durum-degisti' && o.detay.yeni === 'odendi' && o.detay.yapan));
+
+      // Öğrenciler: siparişlerden derlenir, aynı e-posta tek öğrenci
+      const ogr = (await panel(`/ogrenciler?ara=${encodeURIComponent(MUSTERI.email.toLowerCase())}`)).json;
+      assert.equal(ogr.length, 1);
+      assert.ok(ogr[0].paket_sayisi >= 1);
+      assert.ok(ogr[0].toplam_kurus >= s.toplam_kurus);
+      assert.ok((await panel('/ogrenciler?ara=0555%20111')).json.length >= 1, 'telefonla arama');
+      assert.equal((await panel('/ogrenciler?ara=boylebirisiyok')).json.length, 0);
+
       // Havale gelmeyen sipariş iptal edilebilir (iade gerekmez)
       const r2 = await istek('/api/odeme/baslat', { method: 'POST', govde: { sepet: [{ secenekId: elma, adet: 1 }], musteri: MUSTERI, sozlesmeOnay: true } });
       const s2 = await siparisAl(r2.json.siparisNo);

@@ -121,14 +121,15 @@ router.get('/siparisler/:id', async (req, res) => {
 router.patch('/siparisler/:id', async (req, res) => {
   const b = req.body || {};
   const yeni = await siparis.durumDegistir(req.params.id, {
-    durum: b.durum, kargoTakipNo: b.kargoTakipNo, adminNotu: b.adminNotu, elleIade: b.elleIade === true
+    durum: b.durum, kargoTakipNo: b.kargoTakipNo, adminNotu: b.adminNotu, elleIade: b.elleIade === true,
+    yapan: req.kullanici.kullanici_adi
   });
   res.json({ ok: true, durum: yeni.durum });
 });
 
 // İptal et ve parayı iyzico üzerinden müşteriye iade et
 router.post('/siparisler/:id/iade', async (req, res) => {
-  const yeni = await siparis.iadeEt(req.params.id, req.ip);
+  const yeni = await siparis.iadeEt(req.params.id, req.ip, req.kullanici.kullanici_adi);
   res.json({ ok: true, durum: yeni.durum });
 });
 
@@ -149,6 +150,45 @@ router.get('/siparisler/:id/sozlesme', async (req, res) => {
   if (!s || !s.sozlesme_html) throw new KullaniciHatasi('Sözleşme bulunamadı.', 404);
   belgeBasliklari(res);
   res.type('html').send(s.sozlesme_html);
+});
+
+// ---------- Öğrenciler ----------
+// Siparişlerden derlenir (üye olmadan alanlar da dahil): aynı e-postayla verilen siparişler tek öğrenci sayılır.
+// Ödeme sayfası yarıda kalan / başarısız denemeler sayılmaz; havale bekleyenler sayılır.
+router.get('/ogrenciler', async (req, res) => {
+  const ara = dogrulama.temizle(typeof req.query.ara === 'string' ? req.query.ara : '').slice(0, 60);
+  const p = [siparis.AKTIF];
+  let kosul = '';
+  if (ara) {
+    p.push(`%${ara.toLocaleLowerCase('tr-TR')}%`);
+    kosul = `WHERE lower(ad || ' ' || soyad) LIKE $2 OR anahtar LIKE $2`;
+    const rakam = ara.replace(/\D/g, '');
+    if (rakam.length >= 3) {
+      p.push(`%${rakam.slice(-10)}%`);
+      kosul += ` OR regexp_replace(telefon, '[^0-9]', '', 'g') LIKE $3`;
+    }
+  }
+  const { rows } = await pool.query(`
+    WITH ogr AS (
+      SELECT lower(email) AS anahtar,
+        (array_agg(musteri_ad ORDER BY olusturma DESC))[1] AS ad,
+        (array_agg(musteri_soyad ORDER BY olusturma DESC))[1] AS soyad,
+        (array_agg(email ORDER BY olusturma DESC))[1] AS email,
+        (array_agg(telefon ORDER BY olusturma DESC))[1] AS telefon,
+        (array_agg(sehir ORDER BY olusturma DESC))[1] AS il,
+        (array_agg(durum ORDER BY olusturma DESC))[1] AS son_durum,
+        COUNT(*)::int AS siparis_sayisi,
+        COUNT(*) FILTER (WHERE odeme_tarihi IS NOT NULL AND durum NOT IN ('iptal', 'iade-edildi'))::int AS paket_sayisi,
+        COALESCE(SUM(COALESCE(odenen_kurus, toplam_kurus)) FILTER (WHERE odeme_tarihi IS NOT NULL AND durum NOT IN ('iptal', 'iade-edildi')), 0)::int AS toplam_kurus,
+        bool_or(durum = ANY($1)) AS aktif,
+        MIN(olusturma) AS ilk, MAX(olusturma) AS son
+      FROM siparisler
+      WHERE durum NOT IN ('odeme-bekliyor', 'baslatilamadi', 'odeme-basarisiz', 'terk-edildi')
+      GROUP BY lower(email)
+    )
+    SELECT * FROM ogr ${kosul} ORDER BY son DESC LIMIT 1000
+  `, p);
+  res.json(rows);
 });
 
 // ---------- Üyeler ----------
