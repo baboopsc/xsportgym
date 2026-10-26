@@ -20,7 +20,7 @@ function sayfaHtml(baslik, icerik) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(baslik)} | ${esc(ayarlar.isletme.marka)}</title>
   <meta name="theme-color" content="#f2efe9">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.svg?v=2" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <script src="/js/bas.js"></script>
 </head>
