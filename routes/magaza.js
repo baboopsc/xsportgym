@@ -20,7 +20,8 @@ router.get('/isletme', (req, res) => {
     marka: i.marka, unvan: i.unvan, adres: i.adres, telefon: i.telefon, eposta: i.eposta,
     whatsapp: i.whatsapp || null, kargoFirmasi: i.kargoFirmasi, kargoyaVerilmeSuresi: i.kargoyaVerilmeSuresi,
     calismaSaatleri: i.calismaSaatleri, haritaLinki: i.haritaLinki || null, instagram: i.instagram || null,
-    kurucuInstagram: i.kurucuInstagram || null, testModu: ayarlar.iyzico.testModu
+    kurucuInstagram: i.kurucuInstagram || null, testModu: ayarlar.iyzico.testModu,
+    odemeYontemi: ayarlar.odemeYontemi
   });
 });
 

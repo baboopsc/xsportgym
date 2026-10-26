@@ -23,7 +23,7 @@
   let DURUM_ADLARI = {};
   let GECISLER = {};
   let IADE_EDILEBILIR = [];
-  const ODENMEMIS = ['odeme-bekliyor', 'baslatilamadi', 'odeme-basarisiz', 'terk-edildi'];
+  const ODENMEMIS = ['havale-bekleniyor', 'odeme-bekliyor', 'baslatilamadi', 'odeme-basarisiz', 'terk-edildi'];
   const OLAY_ADLARI = {
     'siparis-olusturuldu': 'Sipariş oluşturuldu',
     'odeme-sayfasi-acildi': 'Ödeme sayfası açıldı',
@@ -168,7 +168,7 @@
   // ---------- Siparişler ----------
 
   const FILTRELER = [
-    ['', 'Aktif öğrenciler'], ['odendi', 'Yeni öğrenciler'], ['inceleme', 'İncelemede'], ['hazirlaniyor', 'Program hazırlanıyor'],
+    ['', 'Aktif öğrenciler'], ['havale-bekleniyor', 'Havale bekleyen'], ['odendi', 'Yeni öğrenciler'], ['inceleme', 'İncelemede'], ['hazirlaniyor', 'Program hazırlanıyor'],
     ['kargoda', 'Koçluk sürüyor'], ['teslim-edildi', 'Tamamlandı'], ['iptal', 'İptal'], ['iade-edildi', 'İade edildi'],
     ['odeme-bekliyor', 'Ödeme bekleyen'], ['terk-edildi', 'Yarım kalan ödemeler'], ['odeme-basarisiz', 'Başarısız ödemeler'],
     ['tum', 'Tüm siparişler']
@@ -178,20 +178,20 @@
     const secili = $('filtre').value;
     let sayilar = {};
     try { sayilar = await api('/api/admin/ozet'); } catch { /* sayılar olmadan da çalışır */ }
-    const aktif = ['odendi', 'inceleme', 'hazirlaniyor', 'kargoda'].reduce((t, d) => t + (sayilar[d] || 0), 0);
+    const aktif = ['havale-bekleniyor', 'odendi', 'inceleme', 'hazirlaniyor', 'kargoda'].reduce((t, d) => t + (sayilar[d] || 0), 0);
     $('filtre').innerHTML = FILTRELER.map(([deger, ad]) => {
       const adet = deger === '' ? aktif : (deger === 'tum' ? null : sayilar[deger] || 0);
       return `<option value="${deger}">${esc(ad)}${adet !== null ? ` (${adet})` : ''}</option>`;
     }).join('');
     $('filtre').value = secili;
 
-    const KARTLAR = [['odendi', 'Yeni öğrenci', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'], ['hazirlaniyor', 'Program hazırlanıyor', 'not'], ['kargoda', 'Koçluk sürüyor', 'dambil']];
+    const KARTLAR = [['havale-bekleniyor', 'Havale bekleyen', 'saat'], ['odendi', 'Yeni öğrenci', 'yildiz'], ['inceleme', 'İncelemede', 'uyari'], ['hazirlaniyor', 'Program hazırlanıyor', 'not'], ['kargoda', 'Koçluk sürüyor', 'dambil']];
     $('ozetKartlari').innerHTML = KARTLAR.map(([d, ad, ik]) => `
       <button type="button" class="ozet-karti ${d} ${secili === d ? 'secili' : ''} ${(sayilar[d] || 0) > 0 ? 'dolu' : ''}" data-filtre="${d}">
         <span class="ozet-karti__ikon">${ikon(ik)}</span>
         <strong>${sayilar[d] || 0}</strong><span>${ad}</span>
       </button>`).join('');
-    const yeni = (sayilar.odendi || 0) + (sayilar.inceleme || 0);
+    const yeni = (sayilar['havale-bekleniyor'] || 0) + (sayilar.odendi || 0) + (sayilar.inceleme || 0);
     $('yeniSayi').textContent = yeni;
     $('yeniSayi').classList.toggle('gizli', yeni === 0);
   }
@@ -209,6 +209,7 @@
     const sonrakiler = (GECISLER[s.durum] || []).filter(d => d !== 'iptal' && d !== 'iade-edildi');
     const iadeEdilebilir = IADE_EDILEBILIR.includes(s.durum);
     const odenmemis = ODENMEMIS.includes(s.durum);
+    const havale = s.durum === 'havale-bekleniyor';
     return `
       <div class="kart siparis-kart" data-id="${esc(s.id)}">
         <div class="siparis-kart__ust">
@@ -223,6 +224,7 @@
         </div>
         ${s.musteri_notu ? `<p class="uyari bilgi">${ikon('mesaj')}<span><strong>Hedefi:</strong> ${esc(s.musteri_notu)}</span></p>` : ''}
         ${s.stok_uyarisi ? `<p class="uyari hata">${ikon('uyari')}<span>Bu pakette kontenjan doluydu. Öğrenciyi arayın veya iptal edin.</span></p>` : ''}
+        ${havale ? `<p class="uyari bilgi">${ikon('saat')}<span>Havale bekleniyor: hesabına açıklaması <strong>#${esc(s.siparis_no)}</strong> olan <strong>${tl(s.toplam_kurus)}</strong> gelince "Havale geldi, onayla"ya bas. Öğrenciye "ödemen alındı" e-postası gider.</span></p>` : ''}
         ${s.durum === 'inceleme' ? `<p class="uyari hata">${ikon('uyari')}<span>Ödeme incelemede. Ayrıntılara bakın ve koçluğa başlamadan önce iyzico panelinden kontrol edin.</span></p>` : ''}
         <table class="kalem-tablo">
           ${s.kalemler.map(k => `
@@ -233,14 +235,17 @@
         </table>
         ${s.admin_notu ? `<div class="bilgi-cip">${ikon('not')} ${esc(s.admin_notu)}</div>` : ''}
         <div class="islem">
-          ${sonrakiler.length ? `
+          ${havale ? `<button class="ana havaleOnay">${ikon('tik')} Havale geldi, onayla</button>
+            <button class="tehlike havaleIptal">${ikon('kapat')} İptal et</button>` : ''}
+          ${!havale && sonrakiler.length ? `
             <select class="yeniDurum" aria-label="Yeni durum">
               <option value="">— Durumu değiştirme —</option>
               ${sonrakiler.map(d => `<option value="${esc(d)}">${esc(DURUM_ADLARI[d])}</option>`).join('')}
             </select>` : ''}
-          ${sonrakiler.length ? '<button class="ana kaydet">Kaydet</button>' : ''}
-          ${odenmemis ? `<button class="odemeKontrol">${ikon('yenile')} Ödemeyi iyzico'dan kontrol et</button>` : ''}
-          ${iadeEdilebilir ? `<button class="tehlike iadeEt">${ikon('iade')} ${s.durum === 'teslim-edildi' ? 'Parayı iade et' : 'İptal et ve parayı iade et'}</button>` : ''}
+          ${!havale && sonrakiler.length ? '<button class="ana kaydet">Kaydet</button>' : ''}
+          ${odenmemis && !havale ? `<button class="odemeKontrol">${ikon('yenile')} Ödemeyi iyzico'dan kontrol et</button>` : ''}
+          ${iadeEdilebilir && !s.kartla ? `<button class="tehlike elleIptal">${ikon('iade')} ${s.durum === 'teslim-edildi' ? 'İade edildi olarak işaretle' : 'İptal et (parayı elle iade et)'}</button>` : ''}
+          ${iadeEdilebilir && s.kartla ? `<button class="tehlike iadeEt">${ikon('iade')} ${s.durum === 'teslim-edildi' ? 'Parayı iade et' : 'İptal et ve parayı iade et'}</button>` : ''}
           <button class="ayrintiAc">Ayrıntılar ${ikon('asagi')}</button>
           <span class="hata mesaj"></span>
         </div>
@@ -334,6 +339,22 @@
       return;
     }
 
+    if (hedef.classList.contains('havaleOnay') || hedef.classList.contains('havaleIptal')) {
+      const onay = hedef.classList.contains('havaleOnay');
+      if (!confirm(onay ? 'Bu siparişin havalesi hesabına geldi mi?\nOnaylayınca öğrenciye "ödemen alındı" e-postası gider.' : 'Sipariş iptal edilecek ve öğrenciye e-posta gidecek. Devam edilsin mi?')) return;
+      hedef.disabled = true;
+      mesaj.textContent = '';
+      try {
+        await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: onay ? 'odendi' : 'iptal' } });
+        filtreleriDoldur();
+        siparisleriYukle();
+      } catch (hata) {
+        mesaj.textContent = hata.message;
+        hedef.disabled = false;
+      }
+      return;
+    }
+
     if (hedef.classList.contains('odemeKontrol')) {
       hedef.disabled = true;
       mesaj.textContent = '';
@@ -366,7 +387,7 @@
     }
 
     if (hedef.classList.contains('elleIptal')) {
-      if (!confirm('Sipariş, para iyzico üzerinden İADE EDİLMEDEN iptal olarak işaretlenecek.\nBunu sadece parayı iyzico panelinden kendiniz iade ettiyseniz yapın.\n\nParayı iade ettiğinizden emin misiniz?')) return;
+      if (!confirm('Sipariş iptal / iade edildi olarak işaretlenecek ve öğrenciye e-posta gidecek.\nParayı öğrenciye kendin (havale ile ya da iyzico panelinden) iade ettiysen devam et.\n\nParayı iade ettiğinden emin misin?')) return;
       try {
         const yeni = (await api(`/api/admin/siparisler/${id}`)).durum === 'teslim-edildi' ? 'iade-edildi' : 'iptal';
         await api(`/api/admin/siparisler/${id}`, { method: 'PATCH', govde: { durum: yeni, elleIade: true } });

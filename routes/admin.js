@@ -63,7 +63,7 @@ router.get('/siparisler', async (req, res) => {
   const p = [];
 
   if (durum === '') {
-    p.push(siparis.AKTIF);
+    p.push(['havale-bekleniyor', ...siparis.AKTIF]);
     kosullar.push(`s.durum = ANY($${p.length})`);
   } else if (durum !== 'tum') {
     if (!siparis.DURUM_ADLARI[durum]) throw new KullaniciHatasi('Geçersiz durum.');
@@ -85,7 +85,7 @@ router.get('/siparisler', async (req, res) => {
   const { rows } = await pool.query(`
     SELECT s.id, s.siparis_no, s.durum, s.toplam_kurus, s.odenen_kurus, s.taksit,
            s.musteri_ad, s.musteri_soyad, s.email, s.telefon, s.adres, s.sehir, s.ilce, s.posta_kodu,
-           s.musteri_notu, s.admin_notu, s.kargo_takip_no, s.stok_uyarisi,
+           s.musteri_notu, s.admin_notu, s.kargo_takip_no, s.stok_uyarisi, (s.odeme_id IS NOT NULL) AS kartla,
            s.olusturma, s.odeme_tarihi, s.kargo_tarihi, s.guncelleme,
            COALESCE(json_agg(json_build_object(
              'urun', k.urun_adi, 'secenek', k.secenek_adi, 'adet', k.adet, 'birimFiyatKurus', k.birim_fiyat_kurus

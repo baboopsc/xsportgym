@@ -170,6 +170,33 @@ const Site = (() => {
     return isletmeSozu;
   }
 
+  // ---------- Afiş tarzı paket kapağı (ana sayfa ve paketler sayfası) ----------
+  // Her süre seçeneği ayrı bir afiş: Selen'in fotoğrafı, büyük süre başlığı, paket içeriği ve fiyat.
+  // Fotoğraflar: public/img/site/paket-1.jpg (1 aylık), paket-3.jpg (3 aylık); yoksa paket.jpg.
+  const POSTER_MADDELERI = ['program', 'beslenme', 'takip', 'iletisim', 'guncelleme'];
+  function posterKart({ urun, secenek, ay, aylikKurus, avantajli }, i = 0) {
+    const b = urun.bakim || {};
+    const link = `/urun.html?u=${encodeURIComponent(urun.slug)}&s=${encodeURIComponent(secenek.id)}`;
+    const foto = ay === 1 || ay === 3 ? `/img/site/paket-${ay}.jpg` : '/img/site/paket.jpg';
+    const baslik = ay ? `${ay} aylık` : secenek.ad;
+    const maddeler = POSTER_MADDELERI.filter(a => b[a]).map(a => `<li>${ikon('tik')}<span>${esc(b[a])}</span></li>`).join('');
+    const dolu = secenek.stok === 0;
+    return `
+      <a class="poster ${avantajli ? 'one-cikan' : ''} ${dolu ? 'kapali' : ''}" href="${link}" data-reveal data-i="${i}">
+        <img class="poster__foto" src="${foto}" alt="" loading="lazy" decoding="async">
+        ${avantajli ? '<span class="poster__rozet">En avantajlı</span>' : ''}
+        <div class="poster__ust">
+          <strong class="poster__ay">${esc(baslik)}</strong>
+          <span class="poster__tur">${adHtml(urun.ad)}</span>
+        </div>
+        ${maddeler ? `<ul class="poster__liste">${maddeler}</ul>` : ''}
+        <div class="poster__alt">
+          <div class="poster__fiyat"><strong>${tlKisa(secenek.fiyatKurus)}</strong>${ay > 1 && aylikKurus ? `<small>ayda ${tlKisa(aylikKurus)}</small>` : ''}</div>
+          <span class="btn ${avantajli ? 'mavi' : ''}">${dolu ? 'Kontenjan dolu' : `Hemen başla ${ikon('ok-capraz')}`}</span>
+        </div>
+      </a>`;
+  }
+
   // ---------- Paket kartı (ana sayfa, paketler, diğer paketler) ----------
   function cerceve(gorselId, alt, { yukle = 'lazy' } = {}) {
     // Fotoğrafı olmayan paketlerde gorseller.js'teki varsayılan paket görseli kullanılır
@@ -291,7 +318,7 @@ const Site = (() => {
     ['/', 'Ana sayfa'],
     ['/paketler.html', '<span><span lang="en">Online</span> koçluk</span>'],
     ['/hakkimizda.html', 'Hakkımızda'],
-    ['/#kampanyalar', 'Kampanyalar'],
+    ['/#online-kocluk', 'Paketler'],
     ['/#iletisim', 'İletişim']
   ];
   // Salonun logosu (pembe-mavi X + SPORT GYM). Dosya: public/img/logo-yatay.svg
@@ -414,8 +441,7 @@ const Site = (() => {
       dolu(i.telefon) && `<li>${ikon('telefon')}<a href="tel:${esc(String(i.telefon).replace(/\s/g, ''))}">${esc(i.telefon)}</a></li>`,
       dolu(i.whatsapp) && `<li>${ikon('whatsapp')}<a href="${esc(whatsappLink(i.whatsapp))}" target="_blank" rel="noopener">WhatsApp'tan yazın</a></li>`,
       dolu(i.eposta) && `<li>${ikon('eposta')}<a href="mailto:${esc(i.eposta)}">${esc(i.eposta)}</a></li>`,
-      dolu(i.adres) && `<li>${ikon('konum')}${dolu(i.haritaLinki) ? `<a href="${esc(i.haritaLinki)}" target="_blank" rel="noopener">${esc(i.adres)}</a>` : `<span>${esc(i.adres)}</span>`}</li>`,
-      ...saatSatirlari(i).map(s => `<li>${ikon('saat')}<span>${esc(s)}</span></li>`)
+      dolu(i.adres) && `<li>${ikon('konum')}${dolu(i.haritaLinki) ? `<a href="${esc(i.haritaLinki)}" target="_blank" rel="noopener">${esc(i.adres)}</a>` : `<span>${esc(i.adres)}</span>`}</li>`
     ].filter(Boolean).join('');
     alt.className = 'alt';
     alt.innerHTML = `
@@ -429,13 +455,13 @@ const Site = (() => {
         <div class="alt__izgara">
           <div>
             <a class="logo" href="/">${logoHtml()}</a>
-            <p>Antakya Güzelburç'ta spor salonu ve online koçluk. Kişiye özel antrenman ve beslenme programı.</p>
+            <p>Milli sporcu Selen Mışraklı ile online koçluk. Kişiye özel antrenman ve beslenme programı, birebir takip.</p>
           </div>
           <div>
-            <h4>Salon</h4>
+            <h4>Koçluk</h4>
             <ul>
               <li><a href="/paketler.html">Online koçluk paketleri</a></li>
-              <li><a href="/#kampanyalar">Kampanyalar</a></li>
+              <li><a href="/#iletisim">Sık sorulanlar</a></li>
               <li><a href="/hakkimizda.html">Hakkımızda</a></li>
               <li><a href="/link">Tüm linkler</a></li>
               <li><a href="/giris.html">Hesabım</a></li>
@@ -462,8 +488,8 @@ const Site = (() => {
         <div class="alt__alt">
           <span>© ${yil} ${esc(i.marka || 'Xsportgym')}</span>
           <span class="alt__guven">
-            <span>${ikon('kalkan')} iyzico ile güvenli ödeme</span>
-            <span>${ikon('kilit')} Kart bilgileriniz bu sitede saklanmaz</span>
+            <span>${ikon('kalkan')} Havale / EFT ile ödeme</span>
+            <span>${ikon('kilit')} Kart bilgisi istenmez</span>
           </span>
           <a class="yukari-btn" href="#">Yukarı çık ${ikon('ok-yukari')}</a>
         </div>
@@ -628,6 +654,6 @@ const Site = (() => {
   return {
     esc, adHtml, tl, tlKisa, api, whatsappLink, saatSatirlari, parametre, gorselUrl, bildir, isletmeAl, benAl, urunleriAl, paketSecenekleriAl, dolu, ikon, azHareket,
     sepetOku, sepetYaz, sepeteEkle, sepetAdetAyarla, sepettenCikar, sepetiBosalt, sepetAdedi,
-    cerceve, urunKarti, iskeletKartlari, yerlestir, hazirla, gozle, kaydirinca, cekmeceAc, cekmeceKapat, sepeteUcur
+    cerceve, urunKarti, posterKart, iskeletKartlari, yerlestir, hazirla, gozle, kaydirinca, cekmeceAc, cekmeceKapat, sepeteUcur
   };
 })();

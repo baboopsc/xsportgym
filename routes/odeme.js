@@ -20,6 +20,11 @@ router.post('/baslat',
       kullaniciId: req.kullanici && req.kullanici.rol === 'musteri' ? req.kullanici.id : null,
       adresiKaydet: govde.adresiKaydet === true
     });
+    if (ayarlar.odemeYontemi === 'havale') {
+      const s = await siparis.havaleSiparisi(yeni);
+      const yonlendir = `/siparis.html?no=${encodeURIComponent(s.siparis_no)}&k=${encodeURIComponent(s.takip_kodu)}&yeni=1`;
+      return res.json({ yonlendir, siparisNo: String(s.siparis_no) });
+    }
     const odemeUrl = await siparis.odemeBaslat(yeni, req.ip);
     res.json({ odemeUrl, siparisNo: String(yeni.siparis.siparis_no) });
   });

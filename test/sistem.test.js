@@ -72,6 +72,7 @@ function testleriCalistir() {
 
     Object.assign(process.env, {
       NODE_ENV: 'test',
+      ODEME_YONTEMI: 'iyzico',
       DATABASE_URL: TEST_DB,
       IYZICO_API_KEY: 'sandbox-test-anahtar',
       IYZICO_SECRET_KEY: 'sandbox-test-gizli',
@@ -444,6 +445,55 @@ function testleriCalistir() {
     assert.equal([sa.stok_uyarisi, sb.stok_uyarisi].filter(Boolean).length, 1);
     const ben = (await panel('/ben')).json;
     assert.ok(ben.uyarilar.some(u => /stok yetersizdi/.test(u.mesaj)));
+  });
+
+  test('havale ile ödeme: IBAN gösterilir, panelden onaylanınca stok düşer ve e-postalar gider', async () => {
+    const ayarlar = require('../lib/ayarlar');
+    const eski = ayarlar.odemeYontemi;
+    ayarlar.odemeYontemi = 'havale';
+    try {
+      const stokOnce = await stok(elma);
+      const r = await istek('/api/odeme/baslat', { method: 'POST', govde: { sepet: [{ secenekId: elma, adet: 1 }], musteri: MUSTERI, sozlesmeOnay: true } });
+      assert.equal(r.durum, 200, r.metin);
+      assert.match(r.json.yonlendir, /^\/siparis\.html\?no=\d+&k=/);
+      assert.equal(r.json.odemeUrl, undefined, 'iyzico sayfası açılmamalı');
+      const s = await siparisAl(r.json.siparisNo);
+      assert.equal(s.durum, 'havale-bekleniyor');
+      assert.equal(s.iyzico_token, null);
+      assert.equal(await stok(elma), stokOnce, 'para gelmeden kontenjan düşmez');
+
+      // Müşterinin sipariş sayfası banka bilgilerini gösterir
+      const k = new URL(r.json.yonlendir, adres).searchParams.get('k');
+      const g = await istek(`/api/siparis/${r.json.siparisNo}?k=${encodeURIComponent(k)}`);
+      assert.equal(g.durum, 200, g.metin);
+      assert.equal(g.json.havale.aciklama, `#${r.json.siparisNo}`);
+      assert.equal(g.json.havale.tutarKurus, s.toplam_kurus);
+      assert.equal(g.json.odendi, false);
+
+      await epostalariGonder();
+      const ilk = smtp.postalar.map(p => postaCoz(p.veri)).filter(p => p.html.includes(`#${r.json.siparisNo}`));
+      assert.ok(ilk.some(p => p.html.includes('IBAN')), 'müşteriye IBAN e-postası gitmeli');
+      assert.ok(ilk.some(p => p.html.includes('Yeni öğrenci')), 'işletmeye havale bekleniyor e-postası gitmeli');
+
+      // Panelde onay: Yeni öğrenci (odendi)
+      const yol = `/siparisler/${s.id}`;
+      assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'hazirlaniyor' } })).durum, 400, 'ödeme onaylanmadan program aşamasına geçilmez');
+      assert.equal((await panel(yol, { method: 'PATCH', govde: { durum: 'odendi' } })).durum, 200);
+      const sonra = await siparisAl(r.json.siparisNo);
+      assert.equal(sonra.durum, 'odendi');
+      assert.ok(sonra.odeme_tarihi);
+      assert.equal(sonra.odenen_kurus, sonra.toplam_kurus);
+      assert.equal(await stok(elma), stokOnce - 1);
+      assert.ok(await tek('SELECT 1 AS var FROM eposta_kuyrugu WHERE anahtar = $1', [`siparis-alindi:${r.json.siparisNo}`]), '"ödemen alındı" e-postası gitmeli');
+
+      // Havale gelmeyen sipariş iptal edilebilir (iade gerekmez)
+      const r2 = await istek('/api/odeme/baslat', { method: 'POST', govde: { sepet: [{ secenekId: elma, adet: 1 }], musteri: MUSTERI, sozlesmeOnay: true } });
+      const s2 = await siparisAl(r2.json.siparisNo);
+      assert.equal((await panel(`/siparisler/${s2.id}`, { method: 'PATCH', govde: { durum: 'iptal' } })).durum, 200);
+      assert.equal(await stok(elma), stokOnce - 1, 'ödenmemiş iptalde kontenjan değişmez');
+    } finally {
+      ayarlar.odemeYontemi = eski;
+    }
   });
 
   test('panel: sipariş durumu (koçluk adımları), iptal ve e-postalar', async () => {

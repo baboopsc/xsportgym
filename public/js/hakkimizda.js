@@ -3,6 +3,7 @@
 (() => {
   // ---------- Haftalık saat grafiği ----------
   const grafik = document.getElementById('saatGrafik');
+  if (grafik) {
   const enCok = Math.max(...[...grafik.children].map(g => Number(g.dataset.saat)));
   const bugun = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(
     new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Istanbul', weekday: 'short' }).format(new Date())
@@ -19,6 +20,7 @@
     not.textContent = bugunKutu.classList.contains('kapali')
       ? 'Bugün pazar, salonumuz kapalı. Yarın 07.00\'de görüşmek üzere!'
       : `Bugün ${bugun === 6 ? '08.00 – 21.00' : '07.00 – 22.30'} arası açığız.`;
+  }
   }
 
   // ---------- Değer kartları: oklarla bir kart kaydır ----------

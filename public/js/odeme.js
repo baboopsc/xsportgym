@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const { esc, tl, api, sepetOku, benAl, ikon } = Site;
+  const { esc, tl, api, sepetOku, sepetiBosalt, benAl, ikon } = Site;
   let uye = null;
   const $ = id => document.getElementById(id);
   const ALANLAR = ['ad', 'soyad', 'telefon', 'email', 'il', 'ilce', 'adres', 'postaKodu', 'not'];
@@ -99,13 +99,18 @@
     const btn = $('odeBtn');
     btn.disabled = true;
     btn.classList.add('yukleniyor');
-    btn.textContent = 'Ödeme sayfası açılıyor';
+    btn.textContent = 'Sipariş oluşturuluyor';
     try {
-      const { odemeUrl } = await api('/api/odeme/baslat', {
+      const cevap = await api('/api/odeme/baslat', {
         method: 'POST',
         govde: { sepet: sepetOku(), musteri, sozlesmeOnay: true, adresiKaydet: Boolean(uye) && $('adresiKaydet').checked }
       });
-      location.href = odemeUrl;
+      if (cevap.yonlendir) {
+        // Havale: sipariş oluştu, sepet boşaltılır ve IBAN bilgilerinin olduğu sipariş sayfası açılır
+        sepetiBosalt();
+        try { sessionStorage.removeItem(FORM_ANAHTARI); } catch { /* yok */ }
+      }
+      location.href = cevap.yonlendir || cevap.odemeUrl;
     } catch (hata) {
       hataGoster(hata.message);
       btn.disabled = false;

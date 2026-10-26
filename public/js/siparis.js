@@ -21,6 +21,21 @@
             <span class="takip-adim__ikon">${ikon(i < sira ? 'tik' : ik)}</span>${ad}
           </div>`).join('')}
       </div>`;
+    const h = s.havale;
+    const havaleKutusu = h ? `
+      <div class="havale-kutu">
+        <h3>${ikon('bilgi')} Ödeme bilgileri</h3>
+        <p>Aşağıdaki hesaba <strong>${tl(h.tutarKurus)}</strong> havale / EFT yap. Açıklamaya mutlaka <strong>${esc(h.aciklama)}</strong> yaz.
+        Ödemen bize ulaşınca siparişin onaylanır ve seninle iletişime geçeriz.</p>
+        <dl>
+          <div><dt>Alıcı</dt><dd>${esc(h.alici)}</dd></div>
+          <div><dt>Banka</dt><dd>${esc(h.banka)}</dd></div>
+          <div><dt>IBAN</dt><dd><span id="ibanMetin">${esc(h.iban)}</span> <button type="button" class="kopyala-btn" data-kopyala="${esc(h.iban.replace(/\s/g, ''))}">Kopyala</button></dd></div>
+          <div><dt>Tutar</dt><dd>${tl(h.tutarKurus)}</dd></div>
+          <div><dt>Açıklama</dt><dd>${esc(h.aciklama)} <button type="button" class="kopyala-btn" data-kopyala="${esc(h.aciklama)}">Kopyala</button></dd></div>
+        </dl>
+        <p class="soluk kucuk">Bu bilgiler e-posta adresine de gönderildi.</p>
+      </div>` : '';
     const bilgi = {
       'odeme-bekliyor': kutu('uyari-kutu', 'saat', 'Ödemeniz kontrol ediliyor. Kartınızdan para çekildiyse siparişiniz birkaç dakika içinde onaylanır.'),
       'inceleme': kutu('uyari-kutu', 'saat', 'Ödemeniz kısa bir güvenlik kontrolünden geçiyor. Onaylanınca seninle iletişime geçeceğiz.'),
@@ -38,6 +53,7 @@
       </div>
       <p class="soluk kucuk">${esc(tarih(s.tarih))}</p>
       ${adimlar}
+      ${havaleKutusu}
       ${bilgi}
       <div class="ozet-kart">
         ${s.kalemler.map(x => `<div class="ozet-satir"><span>${esc(x.urunAdi)} <span class="soluk">(${esc(x.secenekAdi)})</span></span><span class="noktalar"></span><span>${tl(x.birimFiyatKurus * x.adet)}</span></div>`).join('')}
@@ -55,6 +71,14 @@
     const cizgi = $('takipAdimlar');
     if (cizgi) requestAnimationFrame(() => setTimeout(() => cizgi.style.setProperty('--ilerleme', String(sira / 3)), 120));
   }
+
+  // IBAN / açıklama kopyalama
+  document.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-kopyala]');
+    if (!b) return;
+    try { await navigator.clipboard.writeText(b.dataset.kopyala); b.textContent = 'Kopyalandı'; } catch { b.textContent = 'Kopyalanamadı'; }
+    setTimeout(() => { b.textContent = 'Kopyala'; }, 1600);
+  });
 
   const no = parametre('no');
   const k = parametre('k');

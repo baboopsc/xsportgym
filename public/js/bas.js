@@ -8,5 +8,6 @@ document.documentElement.classList.add('js');
 (() => {
   let tema = 'koyu';
   try { if (localStorage.getItem('xsport-tema') === 'acik') tema = 'acik'; } catch { /* gizli sekme vb. */ }
+  if (location.pathname.startsWith('/admin')) tema = 'acik'; // yönetim paneli her zaman aydınlık
   document.documentElement.dataset.tema = tema;
 })();

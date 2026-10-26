@@ -6,33 +6,7 @@ const ayarlar = require('./lib/ayarlar');
 const { pool, islem } = require('./lib/db');
 const { gocleriUygula, bosSlugBul } = require('./lib/gocler');
 
-// [seçenek adı, fiyat TL, kontenjan]. FİYATLAR DENEME İÇİN YER TUTUCUDUR: panelden Selen'in gerçek fiyatlarıyla değiştirin.
-// Kontenjan 999 = pratikte sınırsız (her satışta 1 azalır).
-const ORNEK_URUNLER = [
-  {
-    ad: 'Online Koçluk', slogan: 'Değişime benimle başla', kategori: 'Online Koçluk',
-    aciklama: 'Hedefine, seviyene ve programına ayırabildiğin zamana göre hazırlanan kişiye özel antrenman ve beslenme programı. '
-      + 'Paket süresi boyunca ilerlemen takip edilir, programın gerektikçe güncellenir.\n\n'
-      + 'Ödemeden sonra seninle iletişime geçip hedefini konuşuyoruz. Programını hazırlayıp sana iletiyoruz; '
-      + 'sen salonda ya da evde uygularken her adımda yanında oluyoruz.',
-    bakim: {
-      sure: 'Seçtiğin süre boyunca', program: 'Kişiye özel, haftalık', beslenme: 'Hedefine göre hazırlanır',
-      takip: 'Düzenli kontrol', iletisim: 'WhatsApp ve e-posta', guncelleme: 'İlerlemene göre',
-      seviye: 'Her seviye', yer: 'Salonda veya evde', baslangic: 'Ödemeden sonra iletişime geçilir'
-    },
-    secenekler: [['1 aylık', 1500, 999], ['3 aylık', 4000, 999], ['6 aylık', 7500, 999]]
-  },
-  {
-    ad: 'Antrenman Programı + Beslenme Planı', slogan: 'Kendi temponla ilerle', kategori: 'Program',
-    aciklama: 'Kişiye özel antrenman programı ve beslenme planı, tek seferlik. Düzenli takip istemeyen, '
-      + 'programını kendi başına uygulamak isteyenler için.',
-    bakim: {
-      program: 'Kişiye özel', beslenme: 'Kişiye özel', iletisim: 'WhatsApp ve e-posta',
-      seviye: 'Her seviye', yer: 'Salonda veya evde', baslangic: 'Ödemeden sonra iletişime geçilir'
-    },
-    secenekler: [['Tek seferlik', 900, 999]]
-  }
-];
+const ORNEK_URUNLER = require('./lib/paket-listesi');
 
 async function ornekUrunleriEkle() {
   const { rows: [{ adet }] } = await pool.query('SELECT COUNT(*)::int AS adet FROM urunler');
@@ -55,7 +29,7 @@ async function ornekUrunleriEkle() {
       }
     }
   });
-  console.log('✔ Deneme paketleri eklendi (fiyatlar yer tutucu, panelden değiştirin)');
+  console.log('✔ Online koçluk paketleri eklendi');
 }
 
 async function main() {
