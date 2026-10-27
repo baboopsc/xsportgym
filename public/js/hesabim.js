@@ -32,7 +32,7 @@
           <span>${tl(s.toplamKurus)}</span>
           <span class="durum-etiket ${durumRengi(s.durum)}">${esc(s.durumAdi)}</span>
         </div>
-      </a>`).join('') : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Henüz siparişiniz yok</h3><p>İlk paketini seçip hemen başlayabilirsin.</p><a class="btn" href="/paketler.html">Fidanlara göz at</a></div>`;
+      </a>`).join('') : `<div class="bos-durum">${Ikon.cizim('dambil')}<h3>Henüz siparişiniz yok</h3><p>İlk paketini seçip hemen başlayabilirsin.</p><a class="btn" href="/paketler.html">Paketlere göz at</a></div>`;
   }
 
   async function baslat() {
